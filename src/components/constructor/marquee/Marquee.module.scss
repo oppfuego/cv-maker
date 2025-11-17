@@ -1,31 +1,61 @@
-.marquee {
+.marqueeWrapper {
   position: relative;
   overflow: hidden;
-  white-space: nowrap;
   width: 100%;
-  background: #f5f7fa;
-  border-top: 2px solid #e0e0e0;
-  border-bottom: 2px solid #e0e0e0;
-  padding: 1rem 0;
+  background: var(--surface-muted);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.2rem 0;
+  backdrop-filter: blur(4px);
+}
+
+.gradientOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+                  90deg,
+                  var(--surface-muted) 0%,
+                  rgba(255, 255, 255, 0) 15%,
+                  rgba(255, 255, 255, 0) 85%,
+                  var(--surface-muted) 100%
+  );
+  z-index: 2;
 }
 
 .track {
   display: flex;
   width: max-content;
-  animation: scroll 20s linear infinite;
+  animation: scroll 30s linear infinite;
+  will-change: transform;
 }
 
 .item {
   display: inline-block;
-  margin: 0 2rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #333;
-  transition: color 0.3s ease;
-}
+  margin: 0 3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  position: relative;
 
-.item:hover {
-  color: #6a11cb;
+  &:before {
+    content: "•";
+    color: var(--primary-color);
+    margin-right: 1.5rem;
+    opacity: 0.6;
+  }
+
+  &:hover {
+    color: var(--primary-color);
+    transform: scale(1.05);
+    text-shadow: 0 0 10px rgba(255, 122, 0, 0.3);
+  }
 }
 
 @keyframes scroll {
@@ -34,5 +64,16 @@
   }
   100% {
     transform: translateX(-50%);
+  }
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+  .item {
+    margin: 0 1.5rem;
+    font-size: 1rem;
+  }
+  .track {
+    animation-duration: 20s;
   }
 }

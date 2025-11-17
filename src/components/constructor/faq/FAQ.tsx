@@ -1,5 +1,5 @@
 "use client";
-import { IoIosArrowDown } from "react-icons/io";
+
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./FAQ.module.scss";
@@ -14,68 +14,51 @@ interface FAQProps {
 }
 
 const FAQ: React.FC<FAQProps> = ({ items }) => {
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-    const toggle = (idx: number) => {
-        setOpenIndex(openIndex === idx ? null : idx);
-    };
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
     return (
-        <motion.div
-            className={styles.wrapper}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            viewport={{ once: true, amount: 0.2 }}
-        >
+        <section className={styles.section}>
             <h2 className={styles.title}>Frequently Asked Questions</h2>
-            <div className={styles.faq}>
-                {items.map((item, idx) => {
-                    const isOpen = openIndex === idx;
+
+            <div className={styles.grid}>
+                {items.map((item, i) => {
+                    const isActive = activeIndex === i;
+
                     return (
-                        <motion.div
-                            key={idx}
-                            className={`${styles.item} ${isOpen ? styles.active : ""}`}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: idx * 0.1, duration: 0.4 }}
-                            viewport={{ once: true }}
-                        >
+                        <div key={i} className={styles.row}>
+                            {/* LEFT — question */}
                             <button
-                                className={styles.question}
-                                onClick={() => toggle(idx)}
-                                aria-expanded={isOpen}
+                                className={`${styles.questionCard} ${isActive ? styles.active : ""}`}
+                                onClick={() => setActiveIndex(isActive ? null : i)}
                             >
-                                <span>{item.question}</span>
-                                <motion.span
-                                    animate={{ rotate: isOpen ? 180 : 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className={isOpen ? styles.arrowOpen : styles.arrow}
-                                >
-                                    <IoIosArrowDown />
-                                </motion.span>
+                <span className={styles.number}>
+                  {(i + 1).toString().padStart(2, "0")}
+                </span>
+                                <span className={styles.text}>{item.question}</span>
                             </button>
 
-                            <AnimatePresence initial={false}>
-                                {isOpen && (
-                                    <motion.div
-                                        key="answer"
-                                        className={styles.answer}
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: "auto", opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.35, ease: "easeInOut" }}
-                                    >
-                                        <div className={styles.answerContent}>{item.answer}</div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                        </motion.div>
+                            {/* RIGHT — answer */}
+                            <div className={styles.answerCell}>
+                                <AnimatePresence>
+                                    {isActive && (
+                                        <motion.div
+                                            key="answer"
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                            transition={{ duration: 0.3 }}
+                                            className={styles.answerBox}
+                                        >
+                                            <p>{item.answer}</p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        </div>
                     );
                 })}
             </div>
-        </motion.div>
+        </section>
     );
 };
 

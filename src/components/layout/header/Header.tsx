@@ -1,24 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { headerContent } from "@/resources/content";
+import React, {useEffect, useState} from "react";
+import {headerContent} from "@/resources/content";
 import styles from "./Header.module.scss";
-import { IconButton } from "@mui/material";
-import { FaBars } from "react-icons/fa";
-import { useUser } from "@/context/UserContext";
+import {IconButton} from "@mui/material";
+import {FaBars} from "react-icons/fa";
+import {useUser} from "@/context/UserContext";
 import Image from "next/image";
 import AuthButtons from "@/components/widgets/auth-buttons/AuthButtons";
-import { headerStyles } from "@/resources/styles-config";
+import {headerStyles} from "@/resources/styles-config";
 import DrawerMenu from "@/components/ui/drawer/Drawer";
-import { useCurrency } from "@/context/CurrencyContext";
-import { motion } from "framer-motion";
+import {useCurrency} from "@/context/CurrencyContext";
+import {motion} from "framer-motion";
+import {IoMdArrowDropright} from "react-icons/io";
 
 const Header: React.FC = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-
     const user = useUser();
-    const { currency, setCurrency } = useCurrency();
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -26,7 +25,7 @@ const Header: React.FC = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // формуємо динамічні стилі при скролі
+    // динамічні стилі при скролі
     const scrolledStyle: React.CSSProperties = {};
     if (isScrolled && headerStyles.type !== "default") {
         switch (headerStyles.scrollMode) {
@@ -44,66 +43,71 @@ const Header: React.FC = () => {
         <>
             <motion.header
                 className={[
-                    headerStyles.type === "default" && styles.header,
                     headerStyles.type === "sticky" && styles.sticky,
-                    headerStyles.type === "sticky-rounded" && styles.stickyRounded,
-                    headerStyles.type === "sticky-rounded" && isScrolled ? styles.scrolled : "",
+                    isScrolled ? styles.scrolled : "",
                 ]
                     .filter(Boolean)
                     .join(" ")}
                 style={scrolledStyle}
-                initial={{ opacity: 0, y: -40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+                initial={{opacity: 0, y: -40}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.6, ease: "easeOut"}}
             >
                 <div className={styles.headerInner}>
+                    {/* Ліва частина — логотип */}
                     <a href={headerContent.logo.href} className={styles.logo}>
                         <Image
-                            width={240}
-                            height={70}
+                            width={190}
+                            height={60}
                             src={headerContent.logo.src}
                             alt={headerContent.logo.alt}
                         />
                     </a>
 
-                    <div className={styles.actions}>
-                        <nav className={styles.nav}>
-                            {headerContent.links.map((link) => (
-                                <a key={link.label} href={link.href} className={styles.link}>
-                                    {link.label}
-                                </a>
-                            ))}
-                        </nav>
+                    {/* Центр — навігація */}
+                    <nav className={styles.nav}>
+                        {headerContent.links.map((link) => (
+                            <a key={link.label} href={link.href} className={styles.link}>
+                                {link.label}
+                            </a>
+                        ))}
+                    </nav>
 
-                        <div className={styles.actionsNav}>
-                            <AuthButtons />
-                            <div className={styles.currencySwitch}>
-                                <select
-                                    value={currency}
-                                    onChange={(e) => setCurrency(e.target.value)}
-                                    className={styles.currencySelect}
-                                >
-                                    <option value="GBP">£ GBP</option>
-                                    <option value="EUR">€ EUR</option>
-                                </select>
+
+                    {/* Права частина — кнопки */}
+                    {/*<div className={styles.actionsNav}>
+                        <AuthButtons/>
+                        <div className={styles.currencySwitch}>
+                            <div
+                                className={`${styles.toggle} ${currency === "EUR" ? styles.active : ""}`}
+                                onClick={() => setCurrency(currency === "GBP" ? "EUR" : "GBP")}
+                            >
+                                <span className={styles.labelLeft}>GBP</span>
+                                <span className={styles.labelRight}>EUR</span>
+                                <div className={styles.thumb}/>
                             </div>
-
                         </div>
+                    </div>*/}
+
+                    <div className={styles.actionsNav}>
+                        <AuthButtons/>
                     </div>
 
+
+                    {/* Mobile menu */}
                     <div className={styles.menuButton}>
                         <IconButton
                             onClick={() => setDrawerOpen(true)}
                             aria-label="Open navigation"
                             className={styles.button}
                         >
-                            <FaBars className={styles.button} />
+                            <FaBars className={styles.button}/>
                         </IconButton>
                     </div>
                 </div>
             </motion.header>
 
-            <DrawerMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+            <DrawerMenu open={drawerOpen} onClose={() => setDrawerOpen(false)}/>
         </>
     );
 };

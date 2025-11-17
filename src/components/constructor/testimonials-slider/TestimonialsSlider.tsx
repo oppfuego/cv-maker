@@ -1,92 +1,102 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay, Navigation } from "swiper/modules";
+import { motion } from "framer-motion";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 import styles from "./TestimonialsSlider.module.scss";
-import { media as mediaMap } from "@/resources/media";
-import ButtonUI from "@/components/ui/button/ButtonUI";
-import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-icons/md";
-import { motion, AnimatePresence } from "framer-motion";
+import { media } from "@/resources/media";
+import { MdStar, MdStarBorder } from "react-icons/md";
 
 interface Testimonial {
     name: string;
     role?: string;
     image?: string;
     text: string;
+    rating?: number;
 }
 
-function resolveMedia(key?: string): string | undefined {
-    if (!key) return undefined;
-    const val = (mediaMap as Record<string, any>)[key];
-    if (!val) return undefined;
-    if (typeof val === "string") return val;
-    if (typeof val === "object" && val.src) return val.src;
-    return undefined;
+interface Props {
+    title?: string;
+    description?: string;
+    testimonials: Testimonial[];
 }
 
-export default function TestimonialsSlider({ testimonials }: { testimonials: Testimonial[] }) {
-    const [current, setCurrent] = useState(0);
-
-    const prev = () => setCurrent((c) => (c === 0 ? testimonials.length - 1 : c - 1));
-    const next = () => setCurrent((c) => (c === testimonials.length - 1 ? 0 : c + 1));
+export default function TestimonialsSlider({ title, description, testimonials }: Props) {
+    const resolveImage = (key?: string) => {
+        if (!key) return undefined;
+        const img = media[key as keyof typeof media];
+        if (typeof img === "string") return img;
+        return (img as any)?.src ?? "";
+    };
 
     return (
-        <motion.div
-            className={styles.slider}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }} // 👈 з’являється при скролі у viewport
-            viewport={{ once: true, amount: 0.3 }} // once=true = один раз, amount=0.3 = 30% блоку має бути у в’юпорті
-            transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-            <ButtonUI
-                shape="circle"
-                size="lg"
-                color="primary"
-                textColor="quaternary"
-                hoverColor="secondary"
-                onClick={prev}
-                aria-label="Previous"
-                startIcon={<MdOutlineKeyboardArrowLeft style={{ fontSize: "35px" }} />}
-            />
+        <section className={styles.section}>
+            {title && <h2 className={styles.title}>{title}</h2>}
+            {description && <p className={styles.description}>{description}</p>}
 
-            <div className={styles.slideWrapper}>
-                <AnimatePresence mode="wait">
-                    {testimonials.map((t, i) =>
-                        i === current ? (
-                            <motion.div
-                                key={i}
-                                className={styles.card}
-                                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -30, scale: 0.95 }}
-                                transition={{ duration: 0.6, ease: "easeInOut" }}
-                            >
-                                {t.image && (
-                                    <img
-                                        src={resolveMedia(t.image)}
-                                        alt={t.name}
-                                        className={styles.avatar}
-                                        loading="lazy"
-                                    />
-                                )}
-                                <p className={styles.text}>"{t.text}"</p>
-                                <h4 className={styles.name}>{t.name}</h4>
-                                {t.role && <p className={styles.role}>{t.role}</p>}
-                            </motion.div>
-                        ) : null
-                    )}
-                </AnimatePresence>
-            </div>
+            <Swiper
+                modules={[Pagination, Autoplay, Navigation]}
+                spaceBetween={40}
+                slidesPerView={1}
+                centeredSlides
+                autoplay={{ delay: 6000, disableOnInteraction: false }}
+                pagination={{ clickable: true }}
+                navigation
+                speed={800}
+                className={styles.slider}
+            >
+                {testimonials.map((t, i) => (
+                    <SwiperSlide key={i}>
+                        <motion.div
+                            className={styles.card}
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6 }}
+                            viewport={{ once: true }}
+                        >
+                            {/* Фото користувача */}
+                            {t.image && (
+                                <motion.img
+                                    src={resolveImage(t.image)}
+                                    alt={t.name}
+                                    className={styles.avatar}
+                                    initial={{ scale: 0.9, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ duration: 0.5 }}
+                                />
+                            )}
 
-            <ButtonUI
-                shape="circle"
-                size="lg"
-                color="primary"
-                textColor="quaternary"
-                hoverColor="secondary"
-                onClick={next}
-                aria-label="Next"
-                startIcon={<MdOutlineKeyboardArrowRight style={{ fontSize: "35px" }} />}
-            />
-        </motion.div>
+                            {/* Цитата */}
+                            <motion.blockquote className={styles.text}>
+                                “{t.text}”
+                            </motion.blockquote>
+
+                            {/* Ім’я + роль */}
+                            <div className={styles.footer}>
+                                <div className={styles.info}>
+                                    <h4 className={styles.name}>{t.name}</h4>
+                                    {t.role && <p className={styles.role}>{t.role}</p>}
+                                </div>
+
+                                {/* ⭐ Рейтинг */}
+                                <div className={styles.stars}>
+                                    {Array.from({ length: 5 }).map((_, idx) =>
+                                        idx < (t.rating ?? 5) ? (
+                                            <MdStar key={idx} className={styles.starFilled} />
+                                        ) : (
+                                            <MdStarBorder key={idx} className={styles.starEmpty} />
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+                    </SwiperSlide>
+                ))}
+            </Swiper>
+        </section>
     );
 }

@@ -3,8 +3,10 @@
   transform: translateY(40px);
   transition: opacity 0.8s ease, transform 0.8s ease;
   display: flex;
-    flex-direction: column;
-    gap: 30px;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  max-width: 1300px;
 }
 
 .fadeBlock.visible {

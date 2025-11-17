@@ -4,116 +4,179 @@ import {COMPANY_NAME} from "@/resources/constants";
 const schema: PageSchema = {
     meta: {
         title: `${COMPANY_NAME} — Instant CVs or Expert Review`,
-        description: `${COMPANY_NAME} lets you instantly create ATS-friendly CVs with our templates, or choose the optional manager review for a perfected CV within 24 hours.`,
+        description: `${COMPANY_NAME} instantly creates ATS-ready CVs or provides a polished expert-reviewed version within 24 hours.`,
         keywords: [
-            "cv maker",
-            "resume builder",
-            "ATS resume",
-            "instant cv",
-            "professional resume",
-            "career success",
-            "cv review",
+            "cv maker", "resume builder", "ATS resume", "instant cv",
+            "professional resume", "cv review", "career success",
+            "HR resume review", "cover letter builder"
         ],
         canonical: "/",
         ogImage: {
             title: COMPANY_NAME,
-            description: `Get your CV instantly — or let our experts polish it within 24 hours.`,
+            description: `Get your CV instantly — or let our experts refine it.`,
             bg: "#0a2540",
             color: "#ffffff",
         },
     },
 
     blocks: [
-        // 🟢 Hero
+
+        /* --------------------------------------------------------------
+         *  HERO — BIG EMOTIONAL OPENING
+         * ------------------------------------------------------------*/
         {
             type: "custom",
             component: "HeroSection",
             title: "Two Ways to Build Your Career",
             highlight: "Instant CV or Expert Review",
-            description:
-                `Fill in your details and get an ATS-ready CV instantly.  
-                 Or choose our Manager Review option and receive a perfected CV crafted by our team within 24 hours.`,
+            description: `Create an ATS-optimized CV instantly or get a polished, HR-reviewed version in 24 hours.`,
             primaryCta: {text: "Create My CV Now", link: "/get-started"},
             secondaryCta: {text: "See Templates", link: "/templates"},
             image: "image1",
         },
 
-        // 🟢 Highlight strip
         {
             type: "custom",
-            component: "HighlightStrip",
-            messages: [
-                "⚡ Instant CV in seconds",
-                "🎨 50+ modern templates",
-                "📑 ATS & recruiter-approved",
-                "🕒 Optional 24h manager review",
+            component: "Marquee",
+            items: [
+                {text: "Trusted by HR managers worldwide"},
+                {text: "8,500+ CVs generated"},
+                {text: "Users from 15 countries"},
+                {text: "10+ years of HR experience"},
             ],
         },
 
-        // 🟢 Why us
         {
             type: "custom",
             component: "ValuesIcons",
             title: "Why Choose Us?",
-            description: `Whether you need a quick CV or expert polish, ${COMPANY_NAME} has you covered.`,
+            description: `${COMPANY_NAME} blends AI speed with human expertise.`,
             values: [
-                {
-                    icon: "⚡",
-                    title: "Instant CV",
-                    text: "Get a professional ATS-ready CV in seconds."
-                },
-                {
-                    icon: "🕒",
-                    title: "24h Review",
-                    text: "HR specialists polish your CV within 24 hours."
-                },
-                {
-                    icon: "📑",
-                    title: "ATS Approved",
-                    text: "Pass recruiter filters with modern templates."
-                },
-                {
-                    icon: "🎨",
-                    title: "Templates for every taste",
-                    text: "Choose from modern, recruiter-tested designs."
-                }
+                {icon: "⚡", title: "Instant CV", text: "Generate a professional CV in seconds."},
+                {icon: "🕒", title: "24h Review", text: "HR specialists refine your CV."},
+                {icon: "📑", title: "ATS Compliance", text: "Optimized to pass filters."},
+                {icon: "🎨", title: "Modern Templates", text: "Beautiful, recruiter-friendly designs."}
             ]
         },
 
+        /* --------------------------------------------------------------
+         *   INFOBLOCK (left text + right image)
+         * ------------------------------------------------------------*/
+
+
+        {
+            type: "section",
+            left: {
+                type: "text",
+                title: "Your CV, Reinvented for Modern Hiring",
+                description: "We combine AI-driven structure with real HR expertise to significantly increase your chances of landing interviews.",
+                bullets: [
+                    "AI-enhanced keyword optimization",
+                    "HR-approved formatting & structure",
+                    "Cleaner, more professional writing",
+                    "Built to pass ATS filters"
+                ],
+            },
+            right: {
+                type: "media",
+                mediaType: "image",
+                src: "image1",
+                alt: "CV comparison before and after"
+            },
+
+        },
+
+        /* --------------------------------------------------------------
+         *   MEDIA + TEXT (right text, left image)
+         * ------------------------------------------------------------*/
+        {
+            type: "section",
+            left: {
+                type: "media",
+                mediaType: "image",
+                src: "image8",
+                width: "100%",
+                height: "320px",
+                alt: "Resume creation process"
+            },
+            right: {
+                type: "text",
+                title: "We Combine Technology With Human Expertise",
+                description:
+                    `Instant CV generation is powered by AI — but the polish comes from real HR professionals.\n\nEvery reviewed CV is analyzed by recruiters who understand industry expectations and modern hiring standards.`,
+                bullets: [
+                    "Tailored recommendations",
+                    "Grammar and clarity improvements",
+                    "Industry-specific adjustments"
+                ]
+            }
+        },
+
+        /* --------------------------------------------------------------
+         *   TIMELINE — HOW IT WORKS
+         * ------------------------------------------------------------*/
         {
             type: "custom",
             component: "Timeline",
             title: "How It Works",
             steps: [
+                {title: "Fill in your details", description: "Work experience, education, and skills."},
+                {title: "Instant CV", description: "Get your ATS-ready document immediately."},
+                {title: "Optional Review", description: "HR expert refines your CV."},
+                {title: "Ready in 24h", description: "Receive a polished version in your inbox."},
+            ],
+        },
+
+        /* --------------------------------------------------------------
+         *  VIDEO DEMO — PRODUCT IN ACTION
+         * ------------------------------------------------------------*/
+        {
+            type: "custom",
+            component: "VideoDemo",
+            title: "Watch It in Action",
+            description: "See how our instant generator and expert review upgrade your resume.",
+            video: "CVMakerDemo",
+        },
+
+        /* --------------------------------------------------------------
+         *  STORY TIMELINE — BRAND DEVELOPMENT
+         * ------------------------------------------------------------*/
+        {
+            type: "custom",
+            component: "StoryTimeline",
+            steps: [
                 {
-                    title: "Fill the Form",
-                    description: "Enter your experience, education, and skills.",
+                    year: "2021",
+                    title: "Launch",
+                    description: "Began as a simple CV generator for quick resume creation."
                 },
                 {
-                    title: "Instant CV",
-                    description: "Download your CV immediately in your chosen template.",
+                    year: "2022",
+                    title: "AI Engine Added",
+                    description: "Introduced intelligent keyword optimization for ATS systems."
                 },
                 {
-                    title: "Manager Review (Optional)",
-                    description: "An HR expert refines your CV for maximum impact.",
+                    year: "2023",
+                    title: "HR Team Added",
+                    description: "Experienced HR professionals joined the platform."
                 },
                 {
-                    title: "Delivery in 24h",
-                    description: "Get your polished CV in your inbox within 24 hours.",
+                    year: "2024",
+                    title: "10,000+ Users",
+                    description: "Became a trusted tool for job seekers worldwide."
+                },
+                {
+                    year: "2025",
+                    title: "Global Expansion",
+                    description: "Launching multi-language CV support and worldwide HR network."
                 },
             ],
         },
 
-        {
-            type: "custom",
-            component: "VideoDemo",
-            title: "See It in Action",
-            description:
-                "Watch how you can instantly create a CV — and how our expert review option works for extra polish.",
-            video: "CVMakerDemo"
-        },
 
-
+        /* --------------------------------------------------------------
+         *  PRICING
+         * ------------------------------------------------------------*/
         {
             type: "grid",
             columns: 2,
@@ -126,11 +189,11 @@ const schema: PageSchema = {
                     price: "€9",
                     tokens: 900,
                     badgeTop: "Starter Plan",
-                    description: "Create your first professional CV instantly with our templates.",
+                    description: "Perfect for first-time users.",
                     features: [
                         "1 instant ATS-ready CV",
-                        "Access to modern templates",
-                        "Basic formatting options"
+                        "Modern templates",
+                        "Basic formatting"
                     ],
                     buttonText: "Start Now",
                     buttonLink: "/checkout?plan=starter",
@@ -141,13 +204,13 @@ const schema: PageSchema = {
                     title: "Pro",
                     price: "€49",
                     tokens: 4900,
-                    badgeTop: "Pro Plan",
-                    description: "Perfect for job seekers who apply frequently and need flexibility.",
+                    badgeTop: "Most Popular",
+                    description: "For active job seekers.",
                     features: [
-                        "Unlimited CV generations per month",
-                        "Multiple export formats (PDF, DOCX)",
-                        "Custom design options",
-                        "Priority email support"
+                        "Unlimited generations",
+                        "PDF/DOCX export",
+                        "Priority support",
+                        "Template customization"
                     ],
                     buttonText: "Go Pro",
                     buttonLink: "/checkout?plan=pro",
@@ -159,13 +222,13 @@ const schema: PageSchema = {
                     price: "€99",
                     tokens: 9900,
                     badgeTop: "Recommended",
-                    description: "Get expert-level CVs and stand out in competitive job markets.",
+                    description: "Full HR support.",
                     features: [
-                        "Unlimited CVs with all templates",
-                        "1-on-1 HR expert review (24h)",
-                        "Advanced personalization & styling",
-                        "Cover letter builder included",
-                        "Dedicated priority support"
+                        "Unlimited CVs",
+                        "24h HR review",
+                        "Personalization",
+                        "Cover letter builder",
+                        "Priority support"
                     ],
                     buttonText: "Choose Premium",
                     buttonLink: "/checkout?plan=premium",
@@ -176,12 +239,12 @@ const schema: PageSchema = {
                     title: "Custom Plan",
                     price: "dynamic",
                     tokens: 0,
-                    badgeTop: "Custom Plan",
-                    description: "Flexible pricing — pay only for what you use.",
+                    badgeTop: "Flexible",
+                    description: "Pay only for what you use.",
                     features: [
-                        "Choose your CV amount",
-                        "Instant calculation of tokens",
-                        "No expiration on credits"
+                        "Custom credits",
+                        "Instant token calculator",
+                        "Credits never expire"
                     ],
                     buttonText: "Buy Custom",
                     buttonLink: "/checkout?plan=custom",
@@ -189,21 +252,9 @@ const schema: PageSchema = {
             ],
         },
 
-
-        // 🟢 Final CTA
-        {
-            type: "section",
-            align: "center",
-            left: {
-                type: "text",
-                title: `Get Your CV — Your Way`,
-                description: `Instant download or manager-reviewed within 24h.  
-                               Thousands of job seekers already trust ${COMPANY_NAME}.`,
-                centerTitle: true,
-                centerDescription: true,
-            },
-        },
-
+        /* --------------------------------------------------------------
+         *  TESTIMONIALS
+         * ------------------------------------------------------------*/
         {
             type: "custom",
             component: "TestimonialsSlider",
@@ -212,19 +263,19 @@ const schema: PageSchema = {
                     name: "Yaroslav Krupa",
                     role: "Marketing Specialist",
                     image: "review1",
-                    text: "I got an instant CV and landed interviews the same week!",
+                    text: "I got an instant CV and interviews the same week!"
                 },
                 {
                     name: "John Smith",
                     role: "Software Engineer",
                     image: "review2",
-                    text: "The instant CV worked, but the manager review made it perfect.",
+                    text: "Expert review made my CV 2x better."
                 },
                 {
                     name: "Maria Lopez",
                     role: "Project Manager",
                     image: "review3",
-                    text: "Loved the option to get expert feedback — worth the wait!",
+                    text: "Quick, clean, and professional."
                 },
             ],
         },
@@ -233,37 +284,21 @@ const schema: PageSchema = {
             type: "faq",
             items: [
                 {
-                    question: "What is the difference between Instant CV and Manager Review?",
-                    answer:
-                        "Instant CV is generated instantly based on your data using a modern template. Manager Review is an expert HR check that takes up to 24 hours to make your CV fully professional."
+                    question: "Instant CV vs Expert Review?",
+                    answer: "Instant CV is generated immediately. Expert Review is manually polished by HR experts."
                 },
-                {
-                    question: "Are your templates ATS-friendly?",
-                    answer:
-                        "Yes, all our templates are optimized for Applicant Tracking Systems (ATS) to ensure your resume passes recruiter filters."
-                },
-                {
-                    question: "Can I download my CV in PDF format?",
-                    answer:
-                        "Yes, you can export your CV in PDF format — the universal standard accepted by most employers."
-                },
-                {
-                    question: "Is my data stored securely?",
-                    answer:
-                        "We take security seriously. All your information is protected and stored in compliance with GDPR standards."
-                },
-                {
-                    question: "Do you also provide help with cover letters?",
-                    answer:
-                        "Yes, with our Premium plan you can build a professional cover letter to match your CV."
-                }
+                {question: "Are templates ATS-friendly?", answer: "Yes. All templates pass ATS filters."},
+                {question: "Can I download in PDF?", answer: "Yes — PDF export is included."},
+                {question: "Is my data secure?", answer: "We follow strict GDPR protocols."},
+                {question: "Cover letters included?", answer: "Yes — in Premium plan."},
             ]
         },
+
         {
             type: "custom",
             component: "ContactForm",
             title: "Need Help?",
-            description: "Contact our support team for assistance.",
+            description: "Our support team is here to assist you anytime.",
         },
     ],
 };

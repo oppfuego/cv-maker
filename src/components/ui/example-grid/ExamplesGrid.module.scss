@@ -1,9 +1,10 @@
 .grid {
-  max-width: 1200px;
-  padding: 0 16px;
+  max-width: 1350px;
+  padding: 0 30px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
+  margin: 0 auto;
 
   @media (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);

@@ -61,12 +61,25 @@ const schema: PageSchema = {
             type: "section",
             left: {
                 type: "custom",
-                component: "StoryTimeline",
+                component: "Timeline",
+                title: "Our Evolution",
                 steps: [
-                    {year: "2018", title: "Founded", description: "Founded by HR experts"},
-                    {year: "2019", title: "CV Generator", description: "Launched instant CV generator"},
-                    {year: "2021", title: "HR Review", description: "Added HR review service"},
-                    {year: "2023", title: "Worldwide", description: "100k+ CVs worldwide"},
+                    {
+                        title: "2021 — Launch",
+                        description: "Started as a simple CV generator focused on fast, clean resume creation."
+                    },
+                    {
+                        title: "2022 — AI Engine Added",
+                        description: "We introduced smart keyword optimization and ATS improvements."
+                    },
+                    {
+                        title: "2023 — HR Team Added",
+                        description: "Experienced HR experts joined to provide personalized CV reviews."
+                    },
+                    {
+                        title: "2024 — 10,000+ Users",
+                        description: "Trusted by job seekers worldwide, across 15+ industries."
+                    },
                 ],
             },
             right: {
@@ -85,13 +98,14 @@ ATS-ready CVs while also offering optional personalized reviews from experienced
 From day one, our mission has been to empower people from all industries and backgrounds to showcase their strengths 
 and land opportunities they truly deserve.`,
                 bullets: [
-                    "Founded by HR experts with 10+ years of experience in recruitment and career consulting",
-                    "Built to bridge the gap between AI automation and human insight",
-                    "Driven by a mission to help job seekers worldwide at every stage of their career",
-                    "Trusted by thousands of professionals globally across tech, healthcare, finance, and more",
+                    "Founded by HR experts with 10+ years of recruitment experience",
+                    "Built to bridge the gap between AI automation and human expertise",
+                    "Designed to help job seekers worldwide at every stage of their career",
+                    "Trusted by thousands globally across tech, healthcare, finance, and more",
                 ],
             },
         },
+
 
         // 🔹 Our Vision
         {

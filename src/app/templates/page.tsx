@@ -82,16 +82,6 @@ const Page = () => {
                         title: "ATS Compatibility Report",
                         text: "Instant feedback on how your CV performs in applicant systems.",
                     },
-                    {
-                        icon: "🏆",
-                        title: "Achievements Boost",
-                        text: "Rewriting of achievements with quantifiable impact and clarity.",
-                    },
-                    {
-                        icon: "🧠",
-                        title: "Skills Gap Report",
-                        text: "An intelligent analysis that highlights missing or desired skills.",
-                    },
                 ]}
             />
 
@@ -103,6 +93,8 @@ const Page = () => {
                     { icon: "⚡", title: "Speed", text: "Generate your CV in minutes" },
                     { icon: "📑", title: "ATS Safe", text: "Pass recruiter filters easily" },
                     { icon: "🎨", title: "Designs", text: "Modern layouts for all industries" },
+                    { icon: "🖊️", title: "Customizable", text: "Easily edit to fit your profile" },
+
                 ]}
             />
 

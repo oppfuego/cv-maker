@@ -5,6 +5,9 @@
   color: var(--text-inverse);
   opacity: 0;
   transform: translateY(40px);
+  max-width: 1300px;
+  padding: 0 30px;
+  margin: 0 auto;
 
   @media (max-width: 768px) {
     flex-direction: column !important;

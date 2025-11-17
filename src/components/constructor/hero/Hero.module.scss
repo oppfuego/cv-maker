@@ -1,7 +1,7 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 70vh;
+  height: 90vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: center;
   color: var(--background-light);
-  border-radius: 25px;
+  border-radius: 0 0 50px 50px;
 
   @media (max-width: 768px) {
     height: 70vh;
@@ -22,7 +22,8 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
   z-index: 0;
-  border-radius: 25px;
+  border-radius: 0 0 50px 50px;
+
 
 }
 
@@ -63,7 +64,7 @@
 }
 
 .highlight {
-  color: var(--background-light);
+  color: var(--quaternary-color);
   position: relative;
   display: inline-block;
   animation: shine 3s infinite linear;

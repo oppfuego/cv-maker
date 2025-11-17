@@ -1,6 +1,9 @@
 .grid {
   display: grid !important;
   width: 100% !important;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr) !important;

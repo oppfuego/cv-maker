@@ -36,7 +36,7 @@ const VideoDemo: React.FC<Props> = ({ title, description, video }) => {
             flexDirection="column"
             alignItems="center"
             gap="0px"
-            style={{ width: "100%", maxWidth: "1100px", margin: "0 auto" }}
+            style={{ width: "100%", maxWidth: "1300px", margin: "0 auto", padding: "0 30px" }}
         >
             <div
                 ref={ref}

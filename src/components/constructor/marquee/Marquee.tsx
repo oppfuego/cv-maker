@@ -2,11 +2,16 @@
 import React from "react";
 import styles from "./Marquee.module.scss";
 
-const Marquee: React.FC<{ items: { text: string }[] }> = ({ items }) => {
+interface MarqueeProps {
+    items: { text: string }[];
+}
+
+const Marquee: React.FC<MarqueeProps> = ({ items }) => {
     const doubled = [...items, ...items];
 
     return (
-        <div className={styles.marquee}>
+        <section className={styles.marqueeWrapper}>
+            <div className={styles.gradientOverlay} />
             <div className={styles.track}>
                 {doubled.map((item, i) => (
                     <span key={i} className={styles.item}>
@@ -14,7 +19,7 @@ const Marquee: React.FC<{ items: { text: string }[] }> = ({ items }) => {
           </span>
                 ))}
             </div>
-        </div>
+        </section>
     );
 };
 
