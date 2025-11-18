@@ -1,4 +1,4 @@
-import logo from "@/assets/logo/logo.svg";
+import logo from "@/assets/logo/logo.png";
 import logo_black from "@/assets/logo/logo-black.svg";
 import image1 from "@/assets/images/image1.jpg";
 import image2 from "@/assets/images/image2.jpg";

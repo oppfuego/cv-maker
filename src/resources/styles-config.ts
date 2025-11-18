@@ -73,11 +73,11 @@ export const drawerConfig = {
 
 // Footer
 export const footerStyles = {
-    type: "corporate" as FooterType,
+    type: "columns" as FooterType,
     showTopBorder: true,
     showBottomBorder: true,
     maxWidth: 1400,
-    paddings: { x: 40, y: 10 },
+    paddings: { x: 40, y: 40 },
     gap: 30,
     columnsGap: 50,
     logo: { width: 240, height: 100, align: "center" as FooterLogoAlign },
@@ -94,11 +94,11 @@ export const footerStyles = {
         socialHover: "var(--background-dark)",
     },
     grid: { colsXL: 1, colsLG: 2, colsMD: 2, colsSM: 1 },
-    font: { size: 18, legalSize: 24 },
+    font: { size: 16, legalSize: 24 },
     sizes: {
-        titles: { xl: 20, lg: 18, md: 18, sm: 16 },
-        links: { xl: 18, lg: 18, md: 18, sm: 16 },
-        icons: { xl: 26, lg: 24, md: 22, sm: 18 },
+        titles: { xl: 16, lg: 16, md: 16, sm: 16 },
+        links: { xl: 16, lg: 16, md: 16, sm: 16 },
+        icons: { xl: 20, lg: 20, md: 20, sm: 18 },
     },
     radius: "0",
     shadow: "none",

@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-export type Currency = "GBP" | "EUR";
+export type Currency = "GBP" | "EUR" | "USD";
 
 interface CurrencyContextType {
     currency: Currency;
@@ -13,15 +13,18 @@ interface CurrencyContextType {
     convertToGBP: (val: number) => number;
 }
 
+// 💱 Символи валют
 const CURRENCY_SIGNS: Record<Currency, string> = {
     GBP: "£",
     EUR: "€",
+    USD: "$",
 };
 
-// 1 GBP = 1.17 EUR
+// 💹 Поточні курси (можна підключити API для оновлення)
 const RATES: Record<Currency, number> = {
-    GBP: 1,
-    EUR: 1.17,
+    GBP: 1,      // базова валюта
+    EUR: 1.17,   // 1 GBP = 1.17 EUR
+    USD: 1.29,   // 1 GBP = 1.29 USD
 };
 
 const CurrencyContext = createContext<CurrencyContextType>({
@@ -37,6 +40,7 @@ export const useCurrency = () => useContext(CurrencyContext);
 
 export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     const [currency, setCurrency] = useState<Currency>("GBP");
+
     const rateToGBP = RATES[currency];
     const sign = CURRENCY_SIGNS[currency];
 

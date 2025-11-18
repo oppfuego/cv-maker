@@ -1,0 +1,106 @@
+.dropdown {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-family);
+}
+
+/* 🔘 Кнопка-тригер */
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  background: linear-gradient(
+                  135deg,
+                  var(--primary-color),
+                  var(--secondary-color)
+  );
+  color: var(--background-light);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 72, 255, 0.4);
+  }
+}
+
+.icon {
+  transition: transform 0.3s ease;
+}
+
+.icon.open {
+  transform: rotate(180deg);
+}
+
+/* 🧡 Меню */
+.menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background: var(--surface-color, #fff);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  padding: 6px 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.menu.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* 💲 Варіанти валют */
+.option {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: var(--quaternary-color, #e6ecff);
+    color: var(--primary-color);
+  }
+
+  &.active {
+    background: var(--primary-color);
+    color: var(--text-inverse, #fff);
+    font-weight: 600;
+  }
+
+  &:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+}
+
+/* 🌙 Темна тема */
+@media (prefers-color-scheme: dark) {
+  .option {
+    color: #eaeaea;
+    &:hover {
+      background: rgba(0, 42, 255, 0.2);
+    }
+  }
+}

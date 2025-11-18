@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { media as mediaMap } from "@/resources/media";
+import {media as mediaMap} from "@/resources/media";
 import Media from "../image/Media";
 import Section from "../section/Section";
 import Text from "../text/Text";
@@ -40,6 +40,7 @@ import TestimonialsSlider from "@/components/constructor/testimonials-slider/Tes
 import VideoDemo from "@/components/constructor/video-demo/VideoDemo";
 import StoryTimeline from "@/components/constructor/story-timeline/StoryTimeline";
 import InfoBlock from "@/components/constructor/Info-block/InfoBlock";
+import ExamplesGrid from "@/components/ui/example-grid/ExamplesGrid";
 
 // ------------------- helpers -------------------
 
@@ -66,20 +67,24 @@ function RenderCustom(b: CustomBlock) {
             );
 
         case "HighlightStrip":
-            return <HighlightStrip messages={b.messages ?? []} />;
+            return <HighlightStrip messages={b.messages ?? []}/>;
+
+        case "ExamplesGrid":
+            return <ExamplesGrid title={b.title} description={b.description} />;
+
 
         case "Marquee":
-            return <Marquee items={b.items ?? []} />;
+            return <Marquee items={b.items ?? []}/>;
 
         case "Timeline":
-            return <Timeline title={b.title} steps={b.steps ?? []} />;
+            return <Timeline title={b.title} steps={b.steps ?? []}/>;
 
 
         case "ContactForm":
-            return <ContactUsForm />;
+            return <ContactUsForm/>;
 
         case "LogoBlock":
-            return <LogoBlock width={b.width} height={b.height} />;
+            return <LogoBlock width={b.width} height={b.height}/>;
 
         case "ValuesIcons":
             return (
@@ -109,10 +114,10 @@ function RenderCustom(b: CustomBlock) {
             );
 
         case "TestimonialsSlider":
-            return <TestimonialsSlider testimonials={b.testimonials} />;
+            return <TestimonialsSlider testimonials={b.testimonials}/>;
 
         case "StoryTimeline":
-            return <StoryTimeline steps={b.steps ?? []} />;
+            return <StoryTimeline steps={b.steps ?? []}/>;
 
         case "InfoBlock":
             return (
@@ -174,11 +179,11 @@ function RenderMedia(b: MediaBlock) {
 }
 
 function RenderSlider(b: SliderBlock) {
-    return <Slider images={b.images.map(resolveMedia)} />;
+    return <Slider images={b.images.map(resolveMedia)}/>;
 }
 
 function RenderFaq(b: FaqBlock) {
-    return <FAQ items={b.items} />;
+    return <FAQ items={b.items}/>;
 }
 
 function RenderCard(b: CardBlock) {
@@ -205,7 +210,7 @@ function RenderPricingCard(b: PricingBlock) {
             buttonText={b.buttonText}
             buttonLink={b.buttonLink}
             badgeTop={b.badgeTop}
-            badgeBottom={b.badgeBottom}е
+            badgeBottom={b.badgeBottom} е
         />
     );
 }
@@ -223,7 +228,7 @@ function RenderSection(b: SectionBlock) {
     const left = b.left ? renderBlock(b.left, "left") : undefined;
     const right = b.right ? renderBlock(b.right, "right") : undefined;
     return (
-        <Section align={mapAlign(b.align)} gap={b.gap} left={left} right={right} />
+        <Section align={mapAlign(b.align)} gap={b.gap} left={left} right={right}/>
     );
 }
 
@@ -256,7 +261,7 @@ function RenderGrid(b: GridBlock) {
             {items.map((item, i) => (
                 <div
                     key={item.key ?? i}
-                    style={item.colSpan ? { gridColumn: `span ${item.colSpan}` } : undefined}
+                    style={item.colSpan ? {gridColumn: `span ${item.colSpan}`} : undefined}
                 >
                     {renderBlock(item.block, item.key ?? i)}
                 </div>
@@ -296,6 +301,6 @@ function renderBlock(block: PageBlock, key?: React.Key): React.ReactNode {
 
 // ------------------- root -------------------
 
-export default function PageRenderer({ schema }: { schema: PageSchema }) {
+export default function PageRenderer({schema}: { schema: PageSchema }) {
     return <>{schema.blocks.map((b, i) => renderBlock(b, i))}</>;
 }

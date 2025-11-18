@@ -173,6 +173,25 @@ const schema: PageSchema = {
             ],
         },
 
+        {
+            type: "custom",
+            component: "ExamplesGrid",
+            title: "Our CV Templates",
+            description: "Explore our professionally designed, ATS-optimized resume templates to find the perfect fit for your industry and style."
+        },
+
+        {
+            type: "custom",
+            component: "TeamGrid",
+            title: "Meet Our Team",
+            description: `Behind ${COMPANY_NAME} is a passionate team of HR experts and developers who combine technology with human insight.`,
+            members: [
+                { name: "Anna Kowalski", role: "HR Manager", bio: "10+ years in recruitment & career coaching.", image: "team1" },
+                { name: "John Doe", role: "Lead Developer", bio: "Building scalable resume tech solutions.", image: "team2" },
+                { name: "Maria Lopez", role: "Designer", bio: "Crafting clean, professional CV templates.", image: "team3" }
+            ]
+        },
+
 
         /* --------------------------------------------------------------
          *  PRICING

@@ -17,6 +17,9 @@ export type ContactFormBlock = {
     description?: string;
 };
 
+
+
+
 export type OgImageInput =
     | string
     | { title?: string; description?: string; bg?: string; color?: string };
@@ -164,6 +167,13 @@ export type TeamGridBlock = {
     }[];
 };
 
+export type CVExamplesBlock = {
+    type: "custom";
+    component: "ExamplesGrid";
+    title?: string;
+    description?: string;
+};
+
 
 export type CardSliderBlock = {
     type: "custom";
@@ -252,6 +262,7 @@ export type CustomBlock =
     | HeroSectionBlock
     | TestimonialsSlider
     | VideoDemoBlock
+    | CVExamplesBlock
     | InfoBlock;
 
 export type PageBlock =

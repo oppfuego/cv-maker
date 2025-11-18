@@ -8,6 +8,7 @@ import ValuesIcons from "@/components/constructor/values-icons/ValuesIcons";
 import HighlightStrip from "@/components/constructor/highlight-strip/HighlightStrip";
 import FAQ from "@/components/constructor/faq/FAQ";
 import { media as mediaMap } from "@/resources/media";
+import Marquee from "@/components/constructor/marquee/Marquee";
 
 function resolveMedia(key?: string) {
     if (!key) return undefined;
@@ -32,14 +33,13 @@ const Page = () => {
                 centerDescription
             />
 
-            {/* Highlight Strip */}
-            <HighlightStrip
-                messages={[
-                    "ATS-friendly CVs 🚀",
-                    "Polished by HR experts 👩‍💼",
-                    "Templates for every industry 📑",
-                ]}
-            />
+            <Marquee items={[
+                { text: "🚀 ATS-friendly CVs" },
+                { text: "👩‍💼 Polished by HR experts" },
+                { text: "📑 Templates for every industry" },
+                { text: "⚡ Instant generation" },
+                { text: "🎨 Modern designs" }
+            ]}/>
 
             {/* Основний грід прикладів */}
             <ExamplesGrid />

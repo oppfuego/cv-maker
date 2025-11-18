@@ -13,6 +13,7 @@ import DrawerMenu from "@/components/ui/drawer/Drawer";
 import {useCurrency} from "@/context/CurrencyContext";
 import {motion} from "framer-motion";
 import {IoMdArrowDropright} from "react-icons/io";
+import CurrencySwitch from "@/components/widgets/currency-switch/CurrencySwitch";
 
 const Header: React.FC = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -91,6 +92,8 @@ const Header: React.FC = () => {
 
                     <div className={styles.actionsNav}>
                         <AuthButtons/>
+                        <CurrencySwitch/>
+
                     </div>
 
 

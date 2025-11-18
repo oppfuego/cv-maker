@@ -65,6 +65,26 @@ const faqSchema: PageSchema = {
                     question: "How can I contact support?",
                     answer: `Our support team is always available at ${COMPANY_EMAIL}.`,
                 },
+                {
+                    question: "What payment methods do you accept?",
+                    answer: `We accept Visa and MasterCard.`,
+                },
+                {
+                    question: "What is your refund policy?",
+                    answer: `We offer a 30-day money-back guarantee on all purchases.`,
+                },
+                {
+                    question: "Can I upgrade to Manager Review after using the instant builder?",
+                    answer: `Yes. You can easily upgrade to the Manager Review service after generating your instant CV.`,
+                },
+                {
+                    question: "Are there any discounts for bulk orders?",
+                    answer: `Please contact our support team at ${COMPANY_EMAIL} for information on bulk order discounts.`,
+                },
+                {
+                    question: "Do you provide career advice?",
+                    answer: `Yes. Our HR experts can provide personalized career advice as part of the Manager Review service.`,
+                }
             ],
         },
     ],

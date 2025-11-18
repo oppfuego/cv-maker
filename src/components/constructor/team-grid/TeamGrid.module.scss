@@ -1,44 +1,97 @@
 .section {
-  max-width: 1100px;
+  max-width: 1350px; // щоб влізли ширші картки
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 55px;
 }
 
 .head {
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  text-align: center;
+  gap: 14px;
 }
 
-.sectionTitle {
+.title {
   font-size: 2rem;
   font-weight: 700;
   color: var(--text-inverse, #111827);
 }
 
-.sectionDesc {
-  font-size: 1.05rem;
-  color: var(--text-secondary, #4b5563);
-  line-height: 1.6;
+.desc {
+  font-size: 1.2rem;
+  color: var(--text-secondary, #555);
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-.memberCard {
-  transition: all 0.3s ease, transform 0.3s ease;
+.slider {
+  width: 100%;
+  padding-bottom: 80px;
+}
+
+.slide {
+  width: 520px;   // 🔥 було 280 → 360 → тепер 420px
+  height: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px);
+  border-radius: 26px;
+  padding: 34px;     // ще більше повітря
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+
+  transition: all 0.35s ease;
+  cursor: pointer;
 
   &:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-14px) scale(1.06);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.20);
   }
 }
 
-@media (max-width: 768px) {
-  .sectionTitle {
-    font-size: 1.6rem;
-  }
+/* —————————————————— */
+/*     ФОТО            */
+/* —————————————————— */
 
-  .sectionDesc {
-    font-size: 0.95rem;
-  }
+.photo {
+  width: 100%;
+  height: 360px;   // 🔥 було 260 → 320 → тепер 360px
+  border-radius: 20px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+/* —————————————————— */
+/*   ТЕКСТ             */
+/* —————————————————— */
+
+.info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.name {
+  font-size: 1.7rem;    // збільшено
+  font-weight: 700;
+  color: var(--text-inverse, #111);
+}
+
+.role {
+  font-size: 1.15rem;   // збільшено
+  color: var(--primary-color, #0a7b83);
+  font-weight: 600;
+}
+
+.bio {
+  font-size: 1.1rem;    // збільшено
+  color: var(--text-secondary, #555);
+  line-height: 1.6;
 }
