@@ -46,9 +46,9 @@ export const footerContent = {
         },
     ],
     contact: {
-        email: "info@cv-makers.co.uk",
-        phone: "+1 234 567 890",
-        address: "Academy House, 11 Dunraven Place, Bridgend, Mid Glamorgan, United Kingdom, CF31 1JF",
+        email: "info@vauldex.co.uk",
+        phone: "+44 7537 167610",
+        address: "1 Brook St, Nottingham, United Kingdom, NG1 1AR",
     },
 
     legal: {
