@@ -27,109 +27,198 @@ const termsSchema: PageSchema = {
             color: "#000000",
         },
     },
+
     blocks: [
         {
             type: "text",
             title: "Terms & Conditions",
-            description: "Effective date: 10 September 2025",
+            bullets: [
+                "Effective date: 10 September 2025",
+                `These Terms and Conditions govern the use of ${COMPANY_NAME} and services operated by ${COMPANY_LEGAL_NAME}.`,
+            ],
         },
+
         {
             type: "text",
             title: "1. General Provisions",
-            description: `1.1. These Terms and Conditions set out the rules for using the website ${COMPANY_NAME} and the services offered by ${COMPANY_LEGAL_NAME} (Company No. ${COMPANY_NUMBER}), registered at ${COMPANY_ADDRESS} (the “Company,” “we,” “us,” or “our”).\n\n1.2. By accessing our website, creating a CV draft, or purchasing token packages, you confirm your agreement with these Terms. If you do not agree, please do not use the Services.`,
+            bullets: [
+                `1.1. These Terms govern the use of ${COMPANY_NAME} and services provided by ${COMPANY_LEGAL_NAME} (Company No. ${COMPANY_NUMBER}), registered at ${COMPANY_ADDRESS}.`,
+                "1.2. By accessing the website, creating a CV draft, or purchasing token packages, you agree to these Terms.",
+                "1.3. If you do not agree with these Terms, you must not use the Services.",
+            ],
         },
+
         {
             type: "text",
             title: "2. Definitions",
             bullets: [
-                "“Services” — tools and features that allow you to create, edit, improve, and export CVs/resumes in PDF or DOCX format, including AI-assisted improvements or personal manager support.",
-                "“Draft” — a preliminary version of a CV/resume created by the user.",
-                "“Final File” — the completed CV/resume in PDF or DOCX format downloaded by the user.",
-                "“Client,” “you” — any individual or entity using our Services or purchasing tokens.",
-                "“Tokens” — internal credits used to pay for Services (1 GBP or 1 EUR = 100 tokens).",
+                "2.1. Services – tools and features allowing creation, editing, improvement, and export of CVs/resumes in PDF or DOCX format, including AI-assisted or human-supported services.",
+                "2.2. Draft – a preliminary version of a CV or resume created by the user.",
+                "2.3. Final File – the completed CV or resume downloaded by the user.",
+                "2.4. Client / you – any individual or entity using the Services.",
+                "2.5. Tokens – internal digital credits used to pay for Services (1 GBP or 1 EUR = 100 Tokens).",
             ],
         },
+
         {
             type: "text",
             title: "3. Right to Use and Account Registration",
-            description: `3.1. You must be at least 18 years old to register or purchase Services, or act as an authorized representative of a legal entity.\n\n3.2. You agree to provide accurate, up-to-date information during registration and keep it current.\n\n3.3. You are responsible for maintaining the confidentiality of your account credentials and for all activities conducted through your account.`,
+            bullets: [
+                "3.1. You must be at least 18 years old or act with proper legal authority.",
+                "3.2. You must provide accurate and up-to-date information during registration.",
+                "3.3. You are responsible for maintaining confidentiality of your account credentials.",
+                "3.4. All activities performed through your account are your responsibility.",
+            ],
         },
+
         {
             type: "text",
             title: "4. Ordering, Tokens and Payment",
-            description: `4.1. Payments must be made via the methods listed on our website. Services become available only after full payment is received.\n\n4.2. Prices are shown in GBP or EUR. Taxes may apply as required by law.`,
+            bullets: [
+                "4.1. Payments must be completed using the methods listed on the website.",
+                "4.2. Services become available only after successful payment.",
+                "4.3. Prices are displayed in GBP or EUR and may include applicable taxes.",
+                "4.4. Tokens represent prepaid access to digital Services and have no cash value.",
+            ],
         },
+
         {
             type: "text",
             title: "5. Service Delivery",
-            description: `5.1. Drafts and final files are generated automatically after the required tokens are deducted.\n\n5.2. You are responsible for reviewing your Final File immediately after download.\n\n5.3. In the event of technical errors, the Company may offer regeneration of the file or a refund of the tokens used.`,
-        },
-        {
-            type: "text",
-            title: "6. Cancellation and Refunds",
-            description: `6.1. Token packages may be canceled before use; refunds are issued minus any applicable payment provider fees.\n\n6.2. Tokens already spent on Services cannot be refunded.\n\n6.3. If a significant technical fault caused by us occurs, compensation or refunds may be provided in line with our refund policy.`,
-        },
-        {
-            type: "text",
-            title: "7. Intellectual Property",
-            description: `7.1. You retain all rights to the information and materials you upload or enter to create your CV/resume.\n\n7.2. We make no claim of ownership over your content and use it solely for providing Services.\n\n7.3. Final Files generated are fully yours once created.`,
-        },
-        {
-            type: "text",
-            title: "8. Confidentiality and Data Processing",
-            description: `8.1. We handle personal data in line with our Privacy Policy and relevant data protection laws (UK GDPR and the Data Protection Act 2018).\n\n8.2. Uploaded data is automatically deleted after processing unless required for technical support or legal obligations.`,
-        },
-        {
-            type: "text",
-            title: "9. Warranties and Disclaimer",
-            description: `9.1. We warrant that Services will be provided with reasonable care and in accordance with their descriptions.\n\n9.2. The Services are provided “as is.” We do not guarantee employment, interview invitations, or any specific career results from using the generated CV/resume.`,
-        },
-        {
-            type: "text",
-            title: "10. Limitation of Liability",
-            description: `10.1. The Company shall not be liable for indirect or consequential damages, including loss of profit, data, or reputation, except in cases of gross negligence or willful misconduct.\n\n10.2. Our total liability is limited to the actual amount you paid for the token package used for the Service that gave rise to the claim.`,
-        },
-        {
-            type: "text",
-            title: "11. Indemnity",
-            description: `You agree to indemnify and hold harmless the Company from any claims, damages, or expenses (including reasonable legal fees) resulting from:\n(a) your breach of these Terms;\n(b) unauthorized use of third-party data; or\n(c) misuse of generated files.`,
-        },
-        {
-            type: "text",
-            title: "12. Third-Party Links",
-            description: "Our website may include links to third-party websites or resources. We are not responsible for their content, accuracy, or availability.",
-        },
-        {
-            type: "text",
-            title: "13. Suspension and Termination",
-            description: `13.1. We reserve the right to suspend or terminate your account if you breach these Terms, engage in fraudulent activity, or pose a risk to security.\n\n13.2. Termination does not relieve you of obligations accrued prior to termination.`,
-        },
-        {
-            type: "text",
-            title: "14. Changes to These Terms",
-            description: "We may amend these Terms from time to time. Significant updates will be published on the website or sent via email. Continued use of the Service after such updates constitutes your acceptance.",
-        },
-        {
-            type: "text",
-            title: "15. Notices",
             bullets: [
-                `📧 ${COMPANY_EMAIL}`,
-                `📍 ${COMPANY_ADDRESS}`,
+                "5.1. Drafts and Final Files are generated automatically after Tokens are deducted.",
+                "5.2. You are responsible for reviewing Final Files immediately after delivery.",
+                "5.3. Additional edits or regenerations may require additional Tokens.",
+                "5.4. The Service is not intended for permanent document storage.",
             ],
         },
+
         {
             type: "text",
-            title: "16. Governing Law and Jurisdiction",
-            description: "These Terms are governed by the laws of England and Wales. Any disputes shall be resolved exclusively in the courts of England and Wales, except where mandatory consumer protection laws apply in your country of residence.",
+            title: "6. Delivery of Digital Content",
+            bullets: [
+                "6.1. All Services result in digital content only. No physical documents are shipped.",
+                "6.2. Delivery is complete when Drafts or Final Files become available in your account or via download.",
+                "6.3. Outputs may be generated by artificial intelligence, human managers, or a combination of both.",
+                "6.4. Re-downloading the same file does not consume additional Tokens.",
+                "6.5. If delivery fails due to a technical issue attributable to us, Tokens may be restored or content regenerated.",
+                `6.6. Support requests must be sent to ${COMPANY_EMAIL} with relevant order details.`,
+            ],
         },
+
         {
             type: "text",
-            title: "17. Miscellaneous",
-            description: `17.1. If any provision of these Terms is found invalid or unenforceable, the remaining provisions will continue in effect.\n\n17.2. Failure to enforce any right does not constitute a waiver of that right.\n\n17.3. These Terms represent the complete agreement between you and the Company regarding the use of our Services.`,
+            title: "7. Cancellation and Refunds",
+            bullets: [
+                "7.1. Token packages may be canceled before use, subject to payment provider fees.",
+                "7.2. Tokens already used for Services are non-refundable.",
+                "7.3. Refunds or compensation may be issued in case of verified technical errors.",
+            ],
         },
+
         {
             type: "text",
-            title: "Company details",
+            title: "8. Intellectual Property",
+            bullets: [
+                "8.1. You retain all rights to content you upload or enter.",
+                "8.2. We do not claim ownership over your content.",
+                "8.3. Generated Final Files belong to you once created.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "9. Confidentiality and Data Processing",
+            bullets: [
+                "9.1. Personal data is processed in accordance with UK GDPR and the Data Protection Act 2018.",
+                "9.2. Uploaded data may be deleted after processing unless required for support or legal obligations.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "10. Warranties and Disclaimer",
+            bullets: [
+                "10.1. Services are provided with reasonable care.",
+                "10.2. Services are provided on an “as is” basis.",
+                "10.3. We do not guarantee employment, interviews, or career outcomes.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "11. Limitation of Liability",
+            bullets: [
+                "11.1. We are not liable for indirect or consequential damages.",
+                "11.2. Total liability is limited to the amount paid for the relevant Token package.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "12. Indemnity",
+            bullets: [
+                "12.1. You agree to indemnify the Company against claims arising from misuse of the Services or breach of these Terms.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "13. Third-Party Links",
+            bullets: [
+                "13.1. We are not responsible for content or availability of third-party websites.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "14. Suspension and Termination",
+            bullets: [
+                "14.1. We may suspend or terminate accounts for breach, fraud, or security risks.",
+                "14.2. Termination does not entitle you to refunds for unused Tokens.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "15. Changes to These Terms",
+            bullets: [
+                "15.1. These Terms may be updated from time to time.",
+                "15.2. Continued use of the Service constitutes acceptance of updated Terms.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "16. Notices",
+            bullets: [
+                `16.1. Email: ${COMPANY_EMAIL}`,
+                `16.2. Address: ${COMPANY_ADDRESS}`,
+            ],
+        },
+
+        {
+            type: "text",
+            title: "17. Governing Law and Jurisdiction",
+            bullets: [
+                "17.1. These Terms are governed by the laws of England and Wales.",
+                "17.2. Courts of England and Wales have exclusive jurisdiction, subject to consumer protection laws.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "18. Miscellaneous",
+            bullets: [
+                "18.1. Invalid provisions do not affect the remainder of these Terms.",
+                "18.2. Failure to enforce a right does not constitute a waiver.",
+                "18.3. These Terms constitute the entire agreement between you and the Company.",
+            ],
+        },
+
+        {
+            type: "text",
+            title: "Company Details",
             bullets: [
                 `Company: ${COMPANY_LEGAL_NAME}`,
                 `Company number: ${COMPANY_NUMBER}`,
