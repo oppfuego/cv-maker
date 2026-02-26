@@ -8,18 +8,12 @@ import styles from "./Footer.module.scss";
 import {footerContent} from "@/resources/content";
 import {footerStyles} from "@/resources/styles-config";
 import {SmartLinkProps} from "@/types/smart-link";
-import {media} from "@/resources/media";
+import visa from "@/assets/cards/visa.png";
+import mastercard from "@/assets/cards/mastercard.png";
 
 import {
-    FaApplePay,
-    FaCcAmex,
-    FaCcMastercard,
-    FaCcVisa,
-    FaFacebookF,
-    FaGooglePay,
     FaInstagram,
     FaLinkedinIn,
-    FaTwitter
 } from "react-icons/fa";
 
 const SmartLink: React.FC<SmartLinkProps> = ({
@@ -66,9 +60,21 @@ const Footer: React.FC = () => {
         ) : null;
 
     const PaymentMethods = () => (
-        <div className={styles.paymentsContent}>
-            <FaCcVisa className={styles.paymentIcon}/>
-            <FaCcMastercard className={styles.paymentIcon}/>
+        <div className={styles["footer__payments"]}>
+            <div className={styles.paymentsContent}>
+                <Image
+                    src={visa}
+                    alt="Visa"
+                    placeholder="blur"
+                    className={styles.paymentIcon}
+                />
+                <Image
+                    src={mastercard}
+                    alt="Mastercard"
+                    placeholder="blur"
+                    className={styles.paymentIcon}
+                />
+            </div>
         </div>
     );
 
@@ -94,7 +100,12 @@ const Footer: React.FC = () => {
                         <a href={`tel:${contact.phone}`}>{contact.phone}</a>
                     </div>
                 )}
-                <LegalAddress/>
+                {contact.address && (
+                    <div className={styles["footer__contact-item"]}>
+                        <p>{contact.address}</p>
+                    </div>
+                )}
+
             </div>
         ) : null;
 
@@ -188,11 +199,13 @@ const Footer: React.FC = () => {
                         <div className={styles["footer__column"]}>
                             <div className={styles["footer__column-title"]}>Follow Us</div>
                             <div className={styles["footer__socials"]}>
-                                <a href="https://www.instagram.com/vauldex.co.uk/" target="_blank" rel="noopener noreferrer"
+                                <a href="https://www.instagram.com/vauldex.co.uk/" target="_blank"
+                                   rel="noopener noreferrer"
                                    aria-label="Instagram" className={styles["footer__social-link"]}>
                                     <FaInstagram/>
                                 </a>
-                                <a href="https://www.linkedin.com/company/vauldex.uk/" target="_blank" rel="noopener noreferrer"
+                                <a href="https://www.linkedin.com/company/vauldex.uk/" target="_blank"
+                                   rel="noopener noreferrer"
                                    aria-label="LinkedIn" className={styles["footer__social-link"]}>
                                     <FaLinkedinIn/>
                                 </a>

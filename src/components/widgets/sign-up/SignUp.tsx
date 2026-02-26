@@ -42,7 +42,7 @@ export default function SignUpPage() {
                         { name: "password", type: "password", placeholder: "Password" },
                     ]}
                     submitLabel="Sign Up"
-                    showTerms // ✅ додаємо чекбокс
+                    showTerms
                 />
             )}
         </Formik>

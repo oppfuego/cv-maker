@@ -57,7 +57,7 @@ const FormUI: React.FC<FormUIProps> = ({
                                 <span>
                   I agree to the{" "}
                                     <a
-                                        href="/terms"
+                                        href="/terms-and-conditions"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
