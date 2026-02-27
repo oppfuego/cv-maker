@@ -1,0 +1,103 @@
+import { NextRequest, NextResponse } from "next/server";
+import { requireAuth } from "@/backend/middlewares/auth.middleware";
+import { userController } from "@/backend/controllers/user.controller";
+import { spoyntPaymentService } from "@/backend/services/spoyntPayment.service";
+
+function assertEnv(name: string): string {
+    const v = process.env[name];
+    if (!v) throw new Error(`Missing env: ${name}`);
+    return v;
+}
+
+function basicAuthHeader(username: string, password: string) {
+    const token = Buffer.from(`${username}:${password}`).toString("base64");
+    return `Basic ${token}`;
+}
+
+export async function GET(req: NextRequest) {
+    try {
+        const payload = await requireAuth(req);
+        const cpi = new URL(req.url).searchParams.get("cpi");
+
+        if (!cpi) return NextResponse.json({ message: "Missing cpi" }, { status: 400 });
+
+        const SPOYNT_BASE_URL = assertEnv("SPOYNT_BASE_URL");
+        const SPOYNT_ACCOUNT_ID = assertEnv("SPOYNT_ACCOUNT_ID");
+        const SPOYNT_API_KEY = assertEnv("SPOYNT_API_KEY");
+
+        const url = `${SPOYNT_BASE_URL}/payment-invoices/${encodeURIComponent(cpi)}`;
+
+        const r = await fetch(url, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: basicAuthHeader(SPOYNT_ACCOUNT_ID, SPOYNT_API_KEY),
+            },
+            cache: "no-store",
+        });
+
+        const text = await r.text();
+        if (!r.ok) {
+            return NextResponse.json({ message: "Spoynt fetch failed", details: text }, { status: 502 });
+        }
+
+        const json = JSON.parse(text);
+        const attrs = json?.data?.attributes;
+
+        const status = attrs?.status;
+        const resolution = attrs?.resolution;
+        const metadata = attrs?.metadata || {};
+
+        const userId = metadata.user_id;
+        const tokens = Number(metadata.tokens);
+
+        if (!userId || !Number.isFinite(tokens) || tokens <= 0) {
+            return NextResponse.json({ message: "Invoice metadata missing" }, { status: 400 });
+        }
+
+        if (userId !== payload.sub) {
+            return NextResponse.json({ message: "Not your payment" }, { status: 403 });
+        }
+
+        await spoyntPaymentService.markStatusByCpi({
+            cpi,
+            status,
+            resolution,
+            metadata,
+            confirmed: true,
+            userId,
+            tokens,
+            amount: Number(attrs?.amount),
+            currency: attrs?.currency,
+            referenceId: attrs?.reference_id,
+        });
+
+        if (status === "processed" && resolution === "ok") {
+            const creditLock = await spoyntPaymentService.tryBeginCredit(cpi);
+            if (!creditLock) {
+                const existing = await spoyntPaymentService.getByCpi(cpi);
+                if (existing?.credited) {
+                    return NextResponse.json({ status: "credited", tokens: Math.floor(tokens) });
+                }
+                return NextResponse.json({ status: "processing" });
+            }
+
+            try {
+                const user = await userController.buyTokens(payload.sub, Math.floor(tokens));
+                await spoyntPaymentService.markCredited(cpi);
+                return NextResponse.json({ status: "credited", tokens: Math.floor(tokens), user });
+            } catch (err) {
+                await spoyntPaymentService.releaseCreditLock(cpi);
+                throw err;
+            }
+        }
+
+        if (status === "pending" || status === "created") {
+            return NextResponse.json({ status: "pending" });
+        }
+
+        return NextResponse.json({ status: "failed", message: "Payment not confirmed", spoynt: { status, resolution } });
+    } catch (err: any) {
+        return NextResponse.json({ message: err?.message || "Unknown error" }, { status: 400 });
+    }
+}

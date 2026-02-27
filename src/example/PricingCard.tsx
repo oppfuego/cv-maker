@@ -20,6 +20,7 @@ interface PricingCardProps {
     description: string;
     features: string[];
     buttonText: string;
+    buttonLink?: string;
     badgeTop?: string;
     badgeBottom?: string;
     index?: number;
@@ -41,28 +42,29 @@ const PricingCard: React.FC<PricingCardProps> = ({
     const user = useUser();
     const { currency, sign, convertFromGBP, convertToGBP } = useCurrency();
 
+    // 🔹 Початкове значення — 0.01
     const [customAmount, setCustomAmount] = useState<number>(MIN_AMOUNT);
     const isCustom = price === "dynamic";
 
+    const minAmountInCurrency = useMemo(() => MIN_AMOUNT, []);
+
     useEffect(() => {
         if (!isCustom) return;
-        if (!Number.isFinite(customAmount) || customAmount < MIN_AMOUNT) {
-            setCustomAmount(MIN_AMOUNT);
+        const minValue = Number(minAmountInCurrency.toFixed(2));
+        if (!Number.isFinite(customAmount) || customAmount < minValue) {
+            setCustomAmount(minValue);
         }
-    }, [isCustom, customAmount]);
+    }, [isCustom, minAmountInCurrency]);
 
-    // 💷 Базова ціна у GBP
-    const basePriceGBP = useMemo(() => {
-        if (isCustom) return 0;
-        const num = parseFloat(price.replace(/[^0-9.]/g, ""));
-        return isNaN(num) ? 0 : num;
-    }, [price, isCustom]);
+    const basePriceGBP = useMemo(
+        () => (isCustom ? 0 : parseFloat(price.replace(/[^0-9.]/g, ""))),
+        [price, isCustom]
+    );
 
-    // 💰 Конвертація у поточну валюту
-    const convertedPrice = useMemo(() => {
-        if (isCustom) return 0;
-        return convertFromGBP(basePriceGBP);
-    }, [basePriceGBP, convertFromGBP, isCustom]);
+    const convertedPrice = useMemo(
+        () => (isCustom ? 0 : convertFromGBP(basePriceGBP)),
+        [basePriceGBP, convertFromGBP, isCustom]
+    );
 
     const handleBuy = async () => {
         if (!user) {
@@ -92,7 +94,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
                     showAlert("Minimum is 10", `Select a plan with at least ${MIN_AMOUNT} ${currency}`, "warning");
                     return;
                 }
-                body = { currency, amount: Number(convertedPrice.toFixed(2)) };
+                // ✅ FIX: сервер чекає tokens, а не amount
+                body = { tokens };
             }
 
             const res = await fetch(endpoint, {
@@ -110,7 +113,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
             const purchaseIntent = {
                 tokens: isCustom
                     ? Math.floor(convertToGBP(customAmount) * TOKENS_PER_GBP)
-                    : Math.floor(convertToGBP(convertedPrice) * TOKENS_PER_GBP),
+                    : tokens,
                 createdAt: Date.now(),
             };
 
@@ -122,20 +125,13 @@ const PricingCard: React.FC<PricingCardProps> = ({
         }
     };
 
-    // 🔢 Розрахунок токенів для dynamic input
-    const tokensCalculated = useMemo(() => {
-        const gbpEquivalent = convertToGBP(customAmount);
-        return Math.floor(gbpEquivalent * TOKENS_PER_GBP);
-    }, [customAmount, convertToGBP]);
-
     return (
         <motion.div
             className={`${styles.card} ${styles[variant]}`}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.15 }}
-        >
+            transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.15 }}>
             {badgeTop && <span className={styles.badgeTop}>{badgeTop}</span>}
             <h3 className={styles.title}>{title}</h3>
 
@@ -145,25 +141,24 @@ const PricingCard: React.FC<PricingCardProps> = ({
                         <Input
                             type="number"
                             value={customAmount}
+                            min={MIN_AMOUNT}
+                            step={0.01}
                             onChange={(e) =>
                                 setCustomAmount(
-                                    e.target.value === "" ? MIN_AMOUNT : Math.max(MIN_AMOUNT, Number(e.target.value))
+                                    e.target.value === ""
+                                        ? MIN_AMOUNT
+                                        : Math.max(MIN_AMOUNT, Number(e.target.value))
                                 )
                             }
                             placeholder="Enter amount"
                             size="md"
                             startDecorator={sign}
-                            slotProps={{
-                                input: {
-                                    min: MIN_AMOUNT,
-                                    step: 0.01,
-                                },
-                            }}
                         />
                     </div>
                     <p className={styles.dynamicPrice}>
                         {sign}
-                        {customAmount.toFixed(2)} {currency} ≈ {tokensCalculated} tokens
+                        {customAmount.toFixed(2)} ≈{" "}
+                        {Math.floor(convertToGBP(customAmount) * TOKENS_PER_GBP)} tokens
                     </p>
                 </>
             ) : (
@@ -181,14 +176,12 @@ const PricingCard: React.FC<PricingCardProps> = ({
                 ))}
             </ul>
 
-            <ButtonUI fullWidth onClick={handleBuy} hoverColor="tertiary" hoverTextColor="quaternary">
+            <ButtonUI fullWidth onClick={handleBuy}>
                 {user ? buttonText : "Sign Up to Buy"}
             </ButtonUI>
-
             {badgeBottom && <span className={styles.badgeBottom}>{badgeBottom}</span>}
         </motion.div>
     );
 };
 
 export default PricingCard;
-
