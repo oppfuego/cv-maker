@@ -136,10 +136,15 @@ export async function POST(req: NextRequest) {
 
         if (!r.ok) {
             const text = await r.text();
+            console.log("[Spoynt] create-invoice error", {
+                status: r.status,
+                body: text,
+            });
             return NextResponse.json({ message: "Spoynt create invoice failed", details: text }, { status: 502 });
         }
 
         const json = await r.json();
+        console.log("[Spoynt] create-invoice response", json);
         const cpi = json?.data?.id;
         if (!cpi) {
             return NextResponse.json({ message: "Spoynt response missing invoice id", raw: json }, { status: 502 });
