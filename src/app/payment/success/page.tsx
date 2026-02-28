@@ -78,18 +78,45 @@ export default function PaymentSuccessPage() {
         }
         lastAppliedTokensRef.current = tokensToCredit;
 
+        const tryBuyTokens = async () => {
+            const run = () =>
+                fetch("/api/user/buy-tokens", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ amount: tokensToCredit }),
+                });
+
+            let res = await run();
+            let data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                const isAuthError =
+                    res.status === 401 ||
+                    /Missing auth|Invalid or expired token/i.test(String(data?.message || ""));
+
+                if (isAuthError) {
+                    const refreshRes = await fetch("/api/auth/refresh", {
+                        method: "POST",
+                        credentials: "include",
+                    });
+                    if (refreshRes.ok) {
+                        res = await run();
+                        data = await res.json().catch(() => ({}));
+                    }
+                }
+            }
+
+            return res.ok;
+        };
+
         const applyTokens = async () => {
             setState("loading");
             setMsg("Crediting your tokens...");
             setCreditedTokens(tokensToCredit);
 
             try {
-                await fetch("/api/user/buy-tokens", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({ amount: tokensToCredit }),
-                });
+                await tryBuyTokens();
             } catch {
                 // Ignore errors; always show success.
             }
