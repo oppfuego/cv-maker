@@ -15,6 +15,7 @@ export default function PaymentSuccessPage() {
         createdAt: number;
     } | null>(null);
     const [referenceId, setReferenceId] = useState<string>("");
+    const [pendingEmail, setPendingEmail] = useState<string>("");
     const lastAppliedTokensRef = useRef<number | null>(null);
 
     const badgeClass = state === "ok" ? styles.badgeOk : styles.badgeLoading;
@@ -41,7 +42,6 @@ export default function PaymentSuccessPage() {
                         createdAt: Date.now(),
                     });
                 } else {
-                    // Fallback to a small positive amount to always credit tokens.
                     setPendingPurchase({
                         tokens: 1,
                         createdAt: Date.now(),
@@ -55,6 +55,9 @@ export default function PaymentSuccessPage() {
                 localStorage.setItem("spoyntOrderRef", storedRef);
             }
             setReferenceId(storedRef);
+
+            const email = localStorage.getItem("pendingPurchaseEmail") || "";
+            setPendingEmail(email);
         } catch {
             setPendingPurchase({ tokens: 1, createdAt: Date.now() });
         }
@@ -116,7 +119,15 @@ export default function PaymentSuccessPage() {
             setCreditedTokens(tokensToCredit);
 
             try {
-                await tryBuyTokens();
+                if (pendingEmail) {
+                    await fetch("/api/sandbox-credit", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: pendingEmail, amount: tokensToCredit }),
+                    });
+                } else {
+                    await tryBuyTokens();
+                }
             } catch {
                 // Ignore errors; always show success.
             }
