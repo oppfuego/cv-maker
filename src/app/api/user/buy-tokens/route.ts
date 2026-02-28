@@ -37,6 +37,8 @@ export async function POST(req: NextRequest) {
         const user = await userController.buyTokens(payload.sub, amount);
         return NextResponse.json({ user });
     } catch (err: any) {
-        return NextResponse.json({ message: err.message }, { status: 400 });
+        const message = err?.message || "Unknown error";
+        const isAuthError = /Missing auth|Invalid or expired token/i.test(String(message));
+        return NextResponse.json({ message }, { status: isAuthError ? 401 : 400 });
     }
 }
