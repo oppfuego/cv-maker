@@ -52,7 +52,7 @@ const schema: PageSchema = {
                     type: "pricing",
                     variant: "starter",
                     title: "Starter",
-                    price: "€9",
+                    price: "€10",
                     tokens: 900,
                     badgeTop: "Starter Plan",
                     description: "Create your first professional CV instantly with our templates.",

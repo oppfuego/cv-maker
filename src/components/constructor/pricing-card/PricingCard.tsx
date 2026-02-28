@@ -10,7 +10,7 @@ import Input from "@mui/joy/Input";
 import { useCurrency } from "@/context/CurrencyContext";
 
 const TOKENS_PER_GBP = 100;
-const MIN_GBP = 10;
+const MIN_AMOUNT = 10;
 
 interface PricingCardProps {
     variant?: "starter" | "pro" | "premium" | "custom";
@@ -41,13 +41,10 @@ const PricingCard: React.FC<PricingCardProps> = ({
     const user = useUser();
     const { currency, sign, convertFromGBP, convertToGBP } = useCurrency();
 
-    const [customAmountInput, setCustomAmountInput] = useState<string>(String(MIN_GBP));
+    const [customAmountInput, setCustomAmountInput] = useState<string>(String(MIN_AMOUNT));
     const isCustom = price === "dynamic";
 
-    const minAmountInCurrency = useMemo(
-        () => Number(convertFromGBP(MIN_GBP).toFixed(2)),
-        [convertFromGBP]
-    );
+    const minAmountInCurrency = useMemo(() => MIN_AMOUNT, []);
 
     useEffect(() => {
         if (!isCustom) return;
@@ -92,8 +89,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
             if (isCustom) {
                 if (!Number.isFinite(parsedCustomAmount)) {
                     showAlert(
-                        `Minimum is ${MIN_GBP} GBP`,
-                        `Enter at least ${minAmountInCurrency.toFixed(2)} ${currency}`,
+                        `Minimum is ${MIN_AMOUNT} ${currency}`,
+                        `Enter at least ${MIN_AMOUNT.toFixed(2)} ${currency}`,
                         "warning"
                     );
                     return;
@@ -101,8 +98,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
                 if (clampedCustomAmount < minAmountInCurrency) {
                     showAlert(
-                        `Minimum is ${MIN_GBP} GBP`,
-                        `Enter at least ${minAmountInCurrency.toFixed(2)} ${currency}`,
+                        `Minimum is ${MIN_AMOUNT} ${currency}`,
+                        `Enter at least ${MIN_AMOUNT.toFixed(2)} ${currency}`,
                         "warning"
                     );
                     return;
@@ -110,8 +107,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
                 body = { currency, amount: Number(clampedCustomAmount.toFixed(2)) };
             } else {
-                if (convertToGBP(convertedPrice) < MIN_GBP) {
-                    showAlert("Minimum is 10 GBP", "Select a plan with at least 10 GBP", "warning");
+                if (convertToGBP(convertedPrice) < MIN_AMOUNT) {
+                    showAlert(`Minimum is ${MIN_AMOUNT} ${currency}`, `Select a plan with at least ${MIN_AMOUNT} ${currency}`, "warning");
                     return;
                 }
                 // ✅ Reference behavior: presets send tokens
