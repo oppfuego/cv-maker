@@ -18,6 +18,9 @@ export default function PaymentSuccessPage() {
     const [isForced, setIsForced] = useState<boolean>(false);
     const hasCheckedRef = useRef(false);
 
+    const isForceSuccess =
+        process.env.NEXT_PUBLIC_SPOYNT_FORCE_SUCCESS === "true" || isForced;
+
     const badgeClass =
         state === "ok"
             ? styles.badgeOk
@@ -58,69 +61,55 @@ export default function PaymentSuccessPage() {
     }, [sp]);
 
     useEffect(() => {
-        if (!cpiValue) {
-            if (isForced && pendingPurchase?.tokens) {
-                const creditSandboxTokens = async () => {
-                    try {
-                        setState("loading");
-                        setMsg("Crediting your tokens...");
-
-                        const runBuyTokens = async () =>
-                            fetch("/api/user/buy-tokens", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                credentials: "include",
-                                body: JSON.stringify({ amount: pendingPurchase.tokens }),
-                            });
-
-                        let res = await runBuyTokens();
-                        let data = await res.json().catch(() => ({}));
-
-                        if (!res.ok) {
-                            const isAuthError =
-                                res.status === 401 ||
-                                /Missing auth|Invalid or expired token/i.test(String(data?.message || ""));
-
-                            if (isAuthError) {
-                                const refreshRes = await fetch("/api/auth/refresh", {
-                                    method: "POST",
-                                    credentials: "include",
-                                });
-                                if (refreshRes.ok) {
-                                    res = await runBuyTokens();
-                                    data = await res.json().catch(() => ({}));
-                                }
-                            }
-                        }
-
-                        if (!res.ok) throw new Error(data?.message || "Failed to credit tokens");
-
-                        if (cancelled) return;
-                        setState("ok");
-                        setCreditedTokens(pendingPurchase.tokens);
-                        setMsg("Payment confirmed. Tokens credited.");
-                        localStorage.removeItem("pendingPurchase");
-                        return;
-                    } catch (err: any) {
-                        if (cancelled) return;
-                        setState("error");
-                        setMsg(err?.message || "Something went wrong.");
-                    }
-                };
-
-                creditSandboxTokens();
-                return;
-            }
-
-            setState("error");
-            setMsg("Missing payment reference.");
-            return;
-        }
-
-        if (hasCheckedRef.current) return;
-        hasCheckedRef.current = true;
-
         let cancelled = false;
+
+        const applyTokens = async () => {
+            try {
+                setState("loading");
+                setMsg("Crediting your tokens...");
+
+                const runBuyTokens = async () =>
+                    fetch("/api/user/buy-tokens", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({ amount: pendingPurchase?.tokens }),
+                    });
+
+                let res = await runBuyTokens();
+                let data = await res.json().catch(() => ({}));
+
+                if (!res.ok) {
+                    const isAuthError =
+                        res.status === 401 ||
+                        /Missing auth|Invalid or expired token/i.test(String(data?.message || ""));
+
+                    if (isAuthError) {
+                        const refreshRes = await fetch("/api/auth/refresh", {
+                            method: "POST",
+                            credentials: "include",
+                        });
+                        if (refreshRes.ok) {
+                            res = await runBuyTokens();
+                            data = await res.json().catch(() => ({}));
+                        }
+                    }
+                }
+
+                if (!res.ok) throw new Error(data?.message || "Failed to credit tokens");
+
+                if (cancelled) return;
+                setState("ok");
+                setCreditedTokens(pendingPurchase?.tokens || null);
+                setMsg("Payment confirmed. Tokens credited.");
+                localStorage.removeItem("pendingPurchase");
+                return;
+            } catch (err: any) {
+                if (cancelled) return;
+                setState("error");
+                setMsg(err?.message || "Something went wrong.");
+            }
+        };
 
         const confirmPayment = async () => {
             try {
@@ -158,12 +147,40 @@ export default function PaymentSuccessPage() {
             }
         };
 
+        if (!pendingPurchase || !Number.isFinite(pendingPurchase.tokens) || pendingPurchase.tokens <= 0) {
+            setState("error");
+            setMsg("Missing selected package.");
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        if (isForceSuccess) {
+            applyTokens();
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        if (!cpiValue) {
+            setState("error");
+            setMsg("Missing payment reference.");
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        if (hasCheckedRef.current) return () => {
+            cancelled = true;
+        };
+        hasCheckedRef.current = true;
+
         confirmPayment();
 
         return () => {
             cancelled = true;
         };
-    }, [cpiValue]);
+    }, [cpiValue, isForceSuccess, pendingPurchase]);
 
     const formattedPendingDate = useMemo(() => {
         if (!pendingPurchase) return "—";
