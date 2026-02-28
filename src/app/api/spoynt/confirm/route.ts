@@ -14,12 +14,46 @@ function basicAuthHeader(username: string, password: string) {
     return `Basic ${token}`;
 }
 
+function isForceSuccessEnabled() {
+    return process.env.SPOYNT_FORCE_SUCCESS === "true" && process.env.NODE_ENV !== "production";
+}
+
 export async function GET(req: NextRequest) {
     try {
         const payload = await requireAuth(req);
         const cpi = new URL(req.url).searchParams.get("cpi");
 
         if (!cpi) return NextResponse.json({ message: "Missing cpi" }, { status: 400 });
+
+        if (isForceSuccessEnabled()) {
+            const tokensFromQuery = Number(new URL(req.url).searchParams.get("tokens"));
+            const tokens = Number.isFinite(tokensFromQuery) && tokensFromQuery > 0 ? tokensFromQuery : null;
+
+            const creditLock = await spoyntPaymentService.tryBeginCredit(cpi);
+            if (creditLock) {
+                try {
+                    const creditTokens = tokens ?? (creditLock.tokens || 0);
+                    if (creditTokens <= 0) {
+                        return NextResponse.json({ status: "failed", message: "Missing tokens in sandbox" });
+                    }
+
+                    const user = await userController.buyTokens(payload.sub, Math.floor(creditTokens));
+                    await spoyntPaymentService.markCredited(cpi);
+
+                    return NextResponse.json({ status: "credited", tokens: Math.floor(creditTokens), user, forced: true });
+                } catch (err) {
+                    await spoyntPaymentService.releaseCreditLock(cpi);
+                    throw err;
+                }
+            }
+
+            const existing = await spoyntPaymentService.getByCpi(cpi);
+            if (existing?.credited) {
+                return NextResponse.json({ status: "credited", tokens: existing.tokens, forced: true });
+            }
+
+            return NextResponse.json({ status: "processing" });
+        }
 
         const SPOYNT_BASE_URL = assertEnv("SPOYNT_BASE_URL");
         const SPOYNT_ACCOUNT_ID = assertEnv("SPOYNT_ACCOUNT_ID");

@@ -33,6 +33,10 @@ function getServiceForCurrency(currency: keyof typeof RATES_TO_GBP, fallback: st
     return candidate;
 }
 
+function isForceSuccessEnabled() {
+    return process.env.SPOYNT_FORCE_SUCCESS === "true" && process.env.NODE_ENV !== "production";
+}
+
 export async function POST(req: NextRequest) {
     try {
         const payload = await requireAuth(req);
@@ -97,6 +101,52 @@ export async function POST(req: NextRequest) {
         const SPOYNT_RETURN_PENDING = assertEnv("SPOYNT_RETURN_PENDING");
 
         const referenceId = crypto.randomUUID();
+
+        if (isForceSuccessEnabled()) {
+            const fakeCpi = `cpi_test_${crypto.randomUUID()}`;
+
+            await spoyntPaymentService.upsertFromInvoice({
+                referenceId,
+                cpi: fakeCpi,
+                userId: payload.sub,
+                tokens,
+                amount: amountInCurrency!,
+                currency: invoiceCurrency,
+                gbpAmount,
+                uiCurrency: currency,
+                uiAmount: amountInCurrency!,
+            });
+
+            await spoyntPaymentService.markStatusByCpi({
+                cpi: fakeCpi,
+                status: "processed",
+                resolution: "ok",
+                referenceId,
+                userId: payload.sub,
+                tokens,
+                amount: amountInCurrency!,
+                currency: invoiceCurrency,
+                metadata: {
+                    user_id: payload.sub,
+                    tokens: String(tokens),
+                    ui_currency: currency,
+                    ui_amount: String(amountInCurrency),
+                },
+            });
+
+            const redirectUrl = `${assertEnv("SPOYNT_RETURN_SUCCESS")}?cpi=${encodeURIComponent(fakeCpi)}`;
+
+            return NextResponse.json({
+                cpi: fakeCpi,
+                referenceId,
+                tokens,
+                amount: amountInCurrency,
+                currency: invoiceCurrency,
+                redirectUrl,
+                forced: true,
+            });
+        }
+
         const createUrl = `${SPOYNT_BASE_URL}/payment-invoices`;
 
         const invoicePayload = {

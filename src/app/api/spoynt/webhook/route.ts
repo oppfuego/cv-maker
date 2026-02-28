@@ -22,8 +22,16 @@ function spoyntSignature(secret: string, rawBody: string) {
     return Buffer.from(digest).toString("base64");
 }
 
+function isForceSuccessEnabled() {
+    return process.env.SPOYNT_FORCE_SUCCESS === "true" && process.env.NODE_ENV !== "production";
+}
+
 export async function POST(req: NextRequest) {
     try {
+        if (isForceSuccessEnabled()) {
+            return NextResponse.json({ ok: true, forced: true });
+        }
+
         const secret = assertEnv("SPOYNT_PRIVATE_KEY");
 
         const rawBody = await req.text();
