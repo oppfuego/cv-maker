@@ -14,6 +14,7 @@ export default function PaymentSuccessPage() {
         tokens: number;
         createdAt: number;
     } | null>(null);
+    const lastAppliedTokensRef = useRef<number | null>(null);
     const hasCheckedRef = useRef(false);
 
     const badgeClass = state === "ok" ? styles.badgeOk : styles.badgeLoading;
@@ -46,33 +47,41 @@ export default function PaymentSuccessPage() {
     }, [sp]);
 
     useEffect(() => {
-        if (hasCheckedRef.current) return;
-        hasCheckedRef.current = true;
-
         let cancelled = false;
 
         const tokensToCredit = pendingPurchase?.tokens ?? 0;
+
+        if (!Number.isFinite(tokensToCredit) || tokensToCredit <= 0) {
+            return () => {
+                cancelled = true;
+            };
+        }
+
+        if (lastAppliedTokensRef.current === tokensToCredit) {
+            return () => {
+                cancelled = true;
+            };
+        }
+        lastAppliedTokensRef.current = tokensToCredit;
 
         const applyTokens = async () => {
             setState("loading");
             setMsg("Crediting your tokens...");
 
-            if (Number.isFinite(tokensToCredit) && tokensToCredit > 0) {
-                try {
-                    await fetch("/api/user/buy-tokens", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        credentials: "include",
-                        body: JSON.stringify({ amount: tokensToCredit }),
-                    });
-                } catch {
-                    // Ignore errors; always show success.
-                }
+            try {
+                await fetch("/api/user/buy-tokens", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ amount: tokensToCredit }),
+                });
+            } catch {
+                // Ignore errors; always show success.
             }
 
             if (cancelled) return;
             setState("ok");
-            setCreditedTokens(Number.isFinite(tokensToCredit) ? tokensToCredit : null);
+            setCreditedTokens(tokensToCredit);
             setMsg("Payment confirmed. Tokens credited.");
             localStorage.removeItem("pendingPurchase");
         };
