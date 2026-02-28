@@ -6,7 +6,7 @@ import { spoyntPaymentService } from "@/backend/services/spoyntPayment.service";
 
 const TOKENS_PER_GBP = 100;
 const RATES_TO_GBP = { GBP: 1, EUR: 1.17, USD: 1.27 } as const;
-const MIN_AMOUNT = 10;
+const MIN_GBP = 10;
 
 function assertEnv(name: string): string {
     const v = process.env[name];
@@ -55,8 +55,8 @@ export async function POST(req: NextRequest) {
             // Пресет рахуємо як GBP
             currency = "GBP";
             amountInCurrency = round2(tokens / TOKENS_PER_GBP);
-            if (amountInCurrency < MIN_AMOUNT) {
-                return NextResponse.json({ message: "Minimum is 10" }, { status: 400 });
+            if (amountInCurrency < MIN_GBP) {
+                return NextResponse.json({ message: "Minimum is 10 GBP" }, { status: 400 });
             }
         } else if (body.currency && body.amount) {
             currency = body.currency;
@@ -68,9 +68,6 @@ export async function POST(req: NextRequest) {
                 return NextResponse.json({ message: "Invalid amount" }, { status: 400 });
             }
             amountInCurrency = round2(a);
-            if (amountInCurrency < MIN_AMOUNT) {
-                return NextResponse.json({ message: "Minimum is 10" }, { status: 400 });
-            }
 
             const gbpEquivalent = amountInCurrency / RATES_TO_GBP[currency];
             tokens = Math.floor(gbpEquivalent * TOKENS_PER_GBP);
@@ -81,12 +78,12 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const invoiceCurrency = currency;
+        const invoiceCurrency = "GBP" as const;
         const gbpAmount =
             currency === "GBP" ? amountInCurrency! : round2(amountInCurrency! / RATES_TO_GBP[currency]);
 
-        if (gbpAmount < 0.01) {
-            return NextResponse.json({ message: "Minimum is 0.01" }, { status: 400 });
+        if (gbpAmount < MIN_GBP) {
+            return NextResponse.json({ message: "Minimum is 10 GBP" }, { status: 400 });
         }
 
         const SPOYNT_RETURN_SUCCESS = assertEnv("SPOYNT_RETURN_SUCCESS");
@@ -101,7 +98,7 @@ export async function POST(req: NextRequest) {
                 cpi: fakeCpi,
                 userId: payload.sub,
                 tokens,
-                amount: amountInCurrency!,
+                amount: gbpAmount,
                 currency: invoiceCurrency,
                 gbpAmount,
                 uiCurrency: currency,
@@ -115,7 +112,7 @@ export async function POST(req: NextRequest) {
                 referenceId,
                 userId: payload.sub,
                 tokens,
-                amount: amountInCurrency!,
+                amount: gbpAmount,
                 currency: invoiceCurrency,
                 metadata: {
                     user_id: payload.sub,
@@ -131,7 +128,7 @@ export async function POST(req: NextRequest) {
                 cpi: fakeCpi,
                 referenceId,
                 tokens,
-                amount: amountInCurrency,
+                amount: gbpAmount,
                 currency: invoiceCurrency,
                 redirectUrl,
                 forced: true,
@@ -142,7 +139,6 @@ export async function POST(req: NextRequest) {
         const SPOYNT_ACCOUNT_ID = assertEnv("SPOYNT_ACCOUNT_ID");
         const SPOYNT_API_KEY = assertEnv("SPOYNT_API_KEY");
         const SPOYNT_DEFAULT_SERVICE = assertEnv("SPOYNT_DEFAULT_SERVICE");
-        const spoyntService = getServiceForCurrency(currency, SPOYNT_DEFAULT_SERVICE);
         const SPOYNT_CALLBACK_URL = assertEnv("SPOYNT_CALLBACK_URL");
 
         const SPOYNT_RETURN_FAIL = assertEnv("SPOYNT_RETURN_FAIL");
@@ -154,9 +150,9 @@ export async function POST(req: NextRequest) {
             data: {
                 type: "payment-invoices",
                 attributes: {
-                    amount: amountInCurrency,
+                    amount: gbpAmount,
                     currency: invoiceCurrency,
-                    service: spoyntService,
+                    service: SPOYNT_DEFAULT_SERVICE,
                     reference_id: referenceId,
                     description: `Averis tokens: ${tokens}`,
                     callback_url: SPOYNT_CALLBACK_URL,
@@ -206,7 +202,7 @@ export async function POST(req: NextRequest) {
             cpi,
             userId: payload.sub,
             tokens,
-            amount: amountInCurrency!,
+            amount: gbpAmount,
             currency: invoiceCurrency,
             gbpAmount,
             uiCurrency: currency,
@@ -219,7 +215,7 @@ export async function POST(req: NextRequest) {
             cpi,
             referenceId,
             tokens,
-            amount: amountInCurrency,
+            amount: gbpAmount,
             currency: invoiceCurrency,
             redirectUrl,
         });

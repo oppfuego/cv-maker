@@ -10,7 +10,7 @@ import Input from "@mui/joy/Input";
 import { useCurrency } from "@/context/CurrencyContext";
 
 const TOKENS_PER_GBP = 100;
-const MIN_AMOUNT = 10;
+const MIN_GBP = 10;
 
 interface PricingCardProps {
     variant?: "starter" | "pro" | "premium" | "custom";
@@ -41,15 +41,28 @@ const PricingCard: React.FC<PricingCardProps> = ({
     const user = useUser();
     const { currency, sign, convertFromGBP, convertToGBP } = useCurrency();
 
-    const [customAmount, setCustomAmount] = useState<number>(MIN_AMOUNT);
+    const [customAmountInput, setCustomAmountInput] = useState<string>(String(MIN_GBP));
     const isCustom = price === "dynamic";
+
+    const minAmountInCurrency = useMemo(
+        () => Number(convertFromGBP(MIN_GBP).toFixed(2)),
+        [convertFromGBP]
+    );
 
     useEffect(() => {
         if (!isCustom) return;
-        if (!Number.isFinite(customAmount) || customAmount < MIN_AMOUNT) {
-            setCustomAmount(MIN_AMOUNT);
-        }
-    }, [isCustom, customAmount]);
+        setCustomAmountInput(String(minAmountInCurrency));
+    }, [isCustom, minAmountInCurrency]);
+
+    const parsedCustomAmount = useMemo(() => {
+        const n = Number(customAmountInput.replace(/,/g, "."));
+        return Number.isFinite(n) ? n : NaN;
+    }, [customAmountInput]);
+
+    const clampedCustomAmount = useMemo(() => {
+        if (!Number.isFinite(parsedCustomAmount)) return minAmountInCurrency;
+        return Math.max(minAmountInCurrency, parsedCustomAmount);
+    }, [parsedCustomAmount, minAmountInCurrency]);
 
     // 💷 Базова ціна у GBP
     const basePriceGBP = useMemo(() => {
@@ -77,22 +90,32 @@ const PricingCard: React.FC<PricingCardProps> = ({
             let body: any;
 
             if (isCustom) {
-                if (customAmount < MIN_AMOUNT) {
+                if (!Number.isFinite(parsedCustomAmount)) {
                     showAlert(
-                        "Minimum is 10",
-                        `Enter at least ${MIN_AMOUNT.toFixed(2)} ${currency}`,
+                        `Minimum is ${MIN_GBP} GBP`,
+                        `Enter at least ${minAmountInCurrency.toFixed(2)} ${currency}`,
                         "warning"
                     );
                     return;
                 }
 
-                body = { currency, amount: customAmount };
-            } else {
-                if (convertedPrice < MIN_AMOUNT) {
-                    showAlert("Minimum is 10", `Select a plan with at least ${MIN_AMOUNT} ${currency}`, "warning");
+                if (clampedCustomAmount < minAmountInCurrency) {
+                    showAlert(
+                        `Minimum is ${MIN_GBP} GBP`,
+                        `Enter at least ${minAmountInCurrency.toFixed(2)} ${currency}`,
+                        "warning"
+                    );
                     return;
                 }
-                body = { currency, amount: Number(convertedPrice.toFixed(2)) };
+
+                body = { currency, amount: Number(clampedCustomAmount.toFixed(2)) };
+            } else {
+                if (convertToGBP(convertedPrice) < MIN_GBP) {
+                    showAlert("Minimum is 10 GBP", "Select a plan with at least 10 GBP", "warning");
+                    return;
+                }
+                // ✅ Reference behavior: presets send tokens
+                body = { tokens };
             }
 
             const res = await fetch(endpoint, {
@@ -109,8 +132,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
             const purchaseIntent = {
                 tokens: isCustom
-                    ? Math.floor(convertToGBP(customAmount) * TOKENS_PER_GBP)
-                    : Math.floor(convertToGBP(convertedPrice) * TOKENS_PER_GBP),
+                    ? Math.floor(convertToGBP(clampedCustomAmount) * TOKENS_PER_GBP)
+                    : tokens,
                 createdAt: Date.now(),
             };
 
@@ -124,9 +147,9 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
     // 🔢 Розрахунок токенів для dynamic input
     const tokensCalculated = useMemo(() => {
-        const gbpEquivalent = convertToGBP(customAmount);
+        const gbpEquivalent = convertToGBP(clampedCustomAmount);
         return Math.floor(gbpEquivalent * TOKENS_PER_GBP);
-    }, [customAmount, convertToGBP]);
+    }, [clampedCustomAmount, convertToGBP]);
 
     return (
         <motion.div
@@ -144,18 +167,15 @@ const PricingCard: React.FC<PricingCardProps> = ({
                     <div className={styles.inputWrapper}>
                         <Input
                             type="number"
-                            value={customAmount}
-                            onChange={(e) =>
-                                setCustomAmount(
-                                    e.target.value === "" ? MIN_AMOUNT : Math.max(MIN_AMOUNT, Number(e.target.value))
-                                )
-                            }
+                            value={customAmountInput}
+                            onChange={(e) => setCustomAmountInput(e.target.value)}
+                            onBlur={() => setCustomAmountInput(clampedCustomAmount.toFixed(2))}
                             placeholder="Enter amount"
                             size="md"
                             startDecorator={sign}
                             slotProps={{
                                 input: {
-                                    min: MIN_AMOUNT,
+                                    min: minAmountInCurrency,
                                     step: 0.01,
                                 },
                             }}
@@ -163,7 +183,8 @@ const PricingCard: React.FC<PricingCardProps> = ({
                     </div>
                     <p className={styles.dynamicPrice}>
                         {sign}
-                        {customAmount.toFixed(2)} {currency} ≈ {tokensCalculated} tokens
+                        {Number.isFinite(parsedCustomAmount) ? clampedCustomAmount.toFixed(2) : "--"} {currency}
+                        ~ {tokensCalculated} tokens
                     </p>
                 </>
             ) : (
