@@ -130,6 +130,9 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
             const data = JSON.parse(text);
 
+            localStorage.setItem("spoyntLastCpi", data?.cpi || "");
+            localStorage.setItem("spoyntForced", String(!!data?.forced));
+
             const purchaseIntent = {
                 tokens: isCustom
                     ? Math.floor(convertToGBP(clampedCustomAmount) * TOKENS_PER_GBP)
