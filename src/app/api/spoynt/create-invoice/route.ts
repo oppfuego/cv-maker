@@ -89,16 +89,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "Minimum is 0.01" }, { status: 400 });
         }
 
-        const SPOYNT_BASE_URL = assertEnv("SPOYNT_BASE_URL");
-        const SPOYNT_ACCOUNT_ID = assertEnv("SPOYNT_ACCOUNT_ID");
-        const SPOYNT_API_KEY = assertEnv("SPOYNT_API_KEY");
-        const SPOYNT_DEFAULT_SERVICE = assertEnv("SPOYNT_DEFAULT_SERVICE");
-        const spoyntService = getServiceForCurrency(currency, SPOYNT_DEFAULT_SERVICE);
-        const SPOYNT_CALLBACK_URL = assertEnv("SPOYNT_CALLBACK_URL");
-
         const SPOYNT_RETURN_SUCCESS = assertEnv("SPOYNT_RETURN_SUCCESS");
-        const SPOYNT_RETURN_FAIL = assertEnv("SPOYNT_RETURN_FAIL");
-        const SPOYNT_RETURN_PENDING = assertEnv("SPOYNT_RETURN_PENDING");
 
         const referenceId = crypto.randomUUID();
 
@@ -134,7 +125,7 @@ export async function POST(req: NextRequest) {
                 },
             });
 
-            const redirectUrl = `${assertEnv("SPOYNT_RETURN_SUCCESS")}?cpi=${encodeURIComponent(fakeCpi)}`;
+            const redirectUrl = `${SPOYNT_RETURN_SUCCESS}?cpi=${encodeURIComponent(fakeCpi)}`;
 
             return NextResponse.json({
                 cpi: fakeCpi,
@@ -146,6 +137,16 @@ export async function POST(req: NextRequest) {
                 forced: true,
             });
         }
+
+        const SPOYNT_BASE_URL = assertEnv("SPOYNT_BASE_URL");
+        const SPOYNT_ACCOUNT_ID = assertEnv("SPOYNT_ACCOUNT_ID");
+        const SPOYNT_API_KEY = assertEnv("SPOYNT_API_KEY");
+        const SPOYNT_DEFAULT_SERVICE = assertEnv("SPOYNT_DEFAULT_SERVICE");
+        const spoyntService = getServiceForCurrency(currency, SPOYNT_DEFAULT_SERVICE);
+        const SPOYNT_CALLBACK_URL = assertEnv("SPOYNT_CALLBACK_URL");
+
+        const SPOYNT_RETURN_FAIL = assertEnv("SPOYNT_RETURN_FAIL");
+        const SPOYNT_RETURN_PENDING = assertEnv("SPOYNT_RETURN_PENDING");
 
         const createUrl = `${SPOYNT_BASE_URL}/payment-invoices`;
 
