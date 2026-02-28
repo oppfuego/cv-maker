@@ -138,6 +138,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
             };
 
             localStorage.setItem("pendingPurchase", JSON.stringify(purchaseIntent));
+            localStorage.setItem("spoyntLastTokens", String(purchaseIntent.tokens));
 
             window.location.href = data.redirectUrl;
         } catch (err: any) {

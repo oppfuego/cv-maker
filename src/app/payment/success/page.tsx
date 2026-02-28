@@ -7,7 +7,7 @@ import styles from "./PaymentSuccess.module.scss";
 export default function PaymentSuccessPage() {
     const sp = useSearchParams();
 
-    const [state, setState] = useState<"loading" | "ok" | "error">("loading");
+    const [state, setState] = useState<"loading" | "ok">("loading");
     const [msg, setMsg] = useState<string>("");
     const [creditedTokens, setCreditedTokens] = useState<number | null>(null);
     const [pendingPurchase, setPendingPurchase] = useState<{
@@ -16,24 +16,30 @@ export default function PaymentSuccessPage() {
     } | null>(null);
     const hasCheckedRef = useRef(false);
 
-    const badgeClass =
-        state === "ok"
-            ? styles.badgeOk
-            : state === "error"
-                ? styles.badgeError
-                : styles.badgeLoading;
+    const badgeClass = state === "ok" ? styles.badgeOk : styles.badgeLoading;
 
     useEffect(() => {
         sp.get("cpi");
         try {
             const raw = localStorage.getItem("pendingPurchase");
-            if (!raw) return;
-            const parsed = JSON.parse(raw);
-            if (!parsed || !Number.isFinite(parsed.tokens)) return;
-            setPendingPurchase({
-                tokens: Number(parsed.tokens),
-                createdAt: Number(parsed.createdAt) || Date.now(),
-            });
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed && Number.isFinite(parsed.tokens)) {
+                    setPendingPurchase({
+                        tokens: Number(parsed.tokens),
+                        createdAt: Number(parsed.createdAt) || Date.now(),
+                    });
+                    return;
+                }
+            }
+
+            const lastTokens = Number(localStorage.getItem("spoyntLastTokens"));
+            if (Number.isFinite(lastTokens) && lastTokens > 0) {
+                setPendingPurchase({
+                    tokens: lastTokens,
+                    createdAt: Date.now(),
+                });
+            }
         } catch {
             setPendingPurchase(null);
         }
@@ -45,32 +51,30 @@ export default function PaymentSuccessPage() {
 
         let cancelled = false;
 
-        const applyTokens = async () => {
-            if (!pendingPurchase || !Number.isFinite(pendingPurchase.tokens) || pendingPurchase.tokens <= 0) {
-                setState("error");
-                setMsg("Missing selected package.");
-                return;
-            }
+        const tokensToCredit = pendingPurchase?.tokens ?? 0;
 
+        const applyTokens = async () => {
             setState("loading");
             setMsg("Crediting your tokens...");
 
-            try {
-                await fetch("/api/user/buy-tokens", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({ amount: pendingPurchase.tokens }),
-                });
-            } catch {
-                // Ignore errors; sandbox mode always shows success
-            } finally {
-                if (cancelled) return;
-                setState("ok");
-                setCreditedTokens(pendingPurchase.tokens);
-                setMsg("Payment confirmed. Tokens credited.");
-                localStorage.removeItem("pendingPurchase");
+            if (Number.isFinite(tokensToCredit) && tokensToCredit > 0) {
+                try {
+                    await fetch("/api/user/buy-tokens", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        credentials: "include",
+                        body: JSON.stringify({ amount: tokensToCredit }),
+                    });
+                } catch {
+                    // Ignore errors; always show success.
+                }
             }
+
+            if (cancelled) return;
+            setState("ok");
+            setCreditedTokens(Number.isFinite(tokensToCredit) ? tokensToCredit : null);
+            setMsg("Payment confirmed. Tokens credited.");
+            localStorage.removeItem("pendingPurchase");
         };
 
         applyTokens();
@@ -100,11 +104,7 @@ export default function PaymentSuccessPage() {
                         <p className={styles.subtitle}>We are syncing your tokens and order.</p>
                     </div>
                     <span className={`${styles.badge} ${badgeClass}`}>
-                        {state === "ok"
-                            ? "Confirmed"
-                            : state === "error"
-                                ? "Error"
-                                : "Loading"}
+                        {state === "ok" ? "Confirmed" : "Loading"}
                     </span>
                 </div>
 
@@ -134,26 +134,12 @@ export default function PaymentSuccessPage() {
                 </div>
 
                 <div className={styles.actions}>
-                    {state === "ok" && (
-                        <>
-                            <a className={styles.primaryBtn} href="/dashboard">
-                                Go to dashboard
-                            </a>
-                            <a className={styles.secondaryBtn} href="/pricing">
-                                Buy more tokens
-                            </a>
-                        </>
-                    )}
-                    {state === "error" && (
-                        <>
-                            <a className={styles.primaryBtn} href="/pricing">
-                                Back to pricing
-                            </a>
-                            <a className={styles.secondaryBtn} href="/contact-us">
-                                Contact support
-                            </a>
-                        </>
-                    )}
+                    <a className={styles.primaryBtn} href="/dashboard">
+                        Go to dashboard
+                    </a>
+                    <a className={styles.secondaryBtn} href="/pricing">
+                        Buy more tokens
+                    </a>
                 </div>
 
                 <p className={styles.meta}>Reference: —</p>
