@@ -107,12 +107,10 @@ const PricingCard: React.FC<PricingCardProps> = ({
 
                 body = { currency, amount: Number(clampedCustomAmount.toFixed(2)) };
             } else {
-                if (convertToGBP(convertedPrice) < MIN_AMOUNT) {
-                    showAlert(`Minimum is ${MIN_AMOUNT} ${currency}`, `Select a plan with at least ${MIN_AMOUNT} ${currency}`, "warning");
-                    return;
-                }
-                // ✅ Reference behavior: presets send tokens
-                body = { tokens };
+                // Always send at least 10 GBP (or equivalent) for starter/pro/premium
+                let gbpAmount = basePriceGBP;
+                if (gbpAmount < MIN_AMOUNT) gbpAmount = MIN_AMOUNT;
+                body = { currency: "GBP", amount: gbpAmount };
             }
 
             const res = await fetch(endpoint, {
