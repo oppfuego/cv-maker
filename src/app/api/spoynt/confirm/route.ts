@@ -38,10 +38,12 @@ export async function GET(req: NextRequest) {
 
         const text = await r.text();
         if (!r.ok) {
+            console.log("[Spoynt] confirm fetch error", { status: r.status, body: text });
             return NextResponse.json({ message: "Spoynt fetch failed", details: text }, { status: 502 });
         }
 
         const json = JSON.parse(text);
+        console.log("[Spoynt] confirm fetch response", json);
         const attrs = json?.data?.attributes;
 
         const status = attrs?.status;

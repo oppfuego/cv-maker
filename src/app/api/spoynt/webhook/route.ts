@@ -51,12 +51,22 @@ export async function POST(req: NextRequest) {
         const attrs = payload?.data?.attributes;
 
         if (type !== "payment-invoices" || !cpi) {
+            console.log("[Spoynt] webhook unsupported", { type, cpi });
             return NextResponse.json({ message: "Unsupported callback type" }, { status: 200 });
         }
 
         const status = attrs?.status;
         const resolution = attrs?.resolution;
         const metadata = attrs?.metadata || {};
+
+        console.log("[Spoynt] webhook event", {
+            cpi,
+            status,
+            resolution,
+            referenceId: attrs?.reference_id,
+            amount: attrs?.amount,
+            currency: attrs?.currency,
+        });
 
         await spoyntPaymentService.markStatusByCpi({
             cpi,
