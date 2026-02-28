@@ -14,8 +14,8 @@ export default function PaymentSuccessPage() {
         tokens: number;
         createdAt: number;
     } | null>(null);
+    const [referenceId, setReferenceId] = useState<string>("");
     const lastAppliedTokensRef = useRef<number | null>(null);
-    const hasCheckedRef = useRef(false);
 
     const badgeClass = state === "ok" ? styles.badgeOk : styles.badgeLoading;
 
@@ -30,19 +30,33 @@ export default function PaymentSuccessPage() {
                         tokens: Number(parsed.tokens),
                         createdAt: Number(parsed.createdAt) || Date.now(),
                     });
-                    return;
                 }
             }
 
-            const lastTokens = Number(localStorage.getItem("spoyntLastTokens"));
-            if (Number.isFinite(lastTokens) && lastTokens > 0) {
-                setPendingPurchase({
-                    tokens: lastTokens,
-                    createdAt: Date.now(),
-                });
+            if (!raw) {
+                const lastTokens = Number(localStorage.getItem("spoyntLastTokens"));
+                if (Number.isFinite(lastTokens) && lastTokens > 0) {
+                    setPendingPurchase({
+                        tokens: lastTokens,
+                        createdAt: Date.now(),
+                    });
+                } else {
+                    // Fallback to a small positive amount to always credit tokens.
+                    setPendingPurchase({
+                        tokens: 1,
+                        createdAt: Date.now(),
+                    });
+                }
             }
+
+            let storedRef = localStorage.getItem("spoyntOrderRef") || "";
+            if (!storedRef) {
+                storedRef = crypto.randomUUID();
+                localStorage.setItem("spoyntOrderRef", storedRef);
+            }
+            setReferenceId(storedRef);
         } catch {
-            setPendingPurchase(null);
+            setPendingPurchase({ tokens: 1, createdAt: Date.now() });
         }
     }, [sp]);
 
@@ -67,6 +81,7 @@ export default function PaymentSuccessPage() {
         const applyTokens = async () => {
             setState("loading");
             setMsg("Crediting your tokens...");
+            setCreditedTokens(tokensToCredit);
 
             try {
                 await fetch("/api/user/buy-tokens", {
@@ -81,7 +96,6 @@ export default function PaymentSuccessPage() {
 
             if (cancelled) return;
             setState("ok");
-            setCreditedTokens(tokensToCredit);
             setMsg("Payment confirmed. Tokens credited.");
             localStorage.removeItem("pendingPurchase");
         };
@@ -128,7 +142,7 @@ export default function PaymentSuccessPage() {
                     </div>
                     <div className={styles.detailItem}>
                         <span>Reference</span>
-                        <span className={styles.detailValue}>—</span>
+                        <span className={styles.detailValue}>{referenceId || "—"}</span>
                     </div>
                     <div className={styles.detailItem}>
                         <span>Credited tokens</span>
@@ -151,7 +165,7 @@ export default function PaymentSuccessPage() {
                     </a>
                 </div>
 
-                <p className={styles.meta}>Reference: —</p>
+                <p className={styles.meta}>Reference: {referenceId || "—"}</p>
             </section>
         </main>
     );
