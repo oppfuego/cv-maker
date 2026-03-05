@@ -2,105 +2,122 @@
   position: relative;
   display: inline-block;
   font-family: var(--font-family);
+  z-index: 10000;
 }
 
-/* 🔘 Кнопка-тригер */
+/* 🔘 Trigger (синій стиль з твоїх змінних) */
 .trigger {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 6px;
-  padding: 0.6rem 1rem;
-  border-radius: 12px;
-  background: linear-gradient(
-                  135deg,
-                  var(--primary-color),
-                  var(--secondary-color)
-  );
-  color: var(--background-light);
-  font-weight: 600;
+
+  width: 90px;
+  height: 36px;
+  padding: 0 12px;
+
+  border-radius: 9999px;
+
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: var(--text-accent);
+
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.22);
+
   border: none;
   cursor: pointer;
+  user-select: none;
+
   transition: all 0.25s ease;
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 72, 255, 0.4);
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.28);
   }
 }
 
-.icon {
-  transition: transform 0.3s ease;
+.label {
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  font-weight: 800;
 }
 
-.icon.open {
+.icon {
+  color: rgba(255, 255, 255, 0.9);
+  transition: transform 0.25s ease;
+}
+
+.open {
   transform: rotate(180deg);
 }
 
-/* 🧡 Меню */
+/* 🧡 Menu (1 column) */
 .menu {
   position: absolute;
-  top: 110%;
-  left: 0;
-  width: 100%;
-  background: var(--surface-color, #fff);
+  top: 44px;
+  right: 0;
+
+  width: 140px; /* під 3-7 валют норм */
+  display: flex;          /* ✅ 1 колонка */
+  flex-direction: column; /* ✅ */
+
+  gap: 4px;
+
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  padding: 6px 0;
+
+  padding: 6px;
+
+  box-shadow: 0 12px 28px var(--shadow-color);
+
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-  z-index: 10;
+  transform: translateY(-8px);
+  transition: all 0.25s ease;
+
+  z-index: 10001;
 }
 
-.menu.show {
+.show {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
 }
 
-/* 💲 Варіанти валют */
+/* 💲 Options */
 .option {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
   width: 100%;
-  padding: 0.6rem 1rem;
-  text-align: left;
+  height: 34px;
+
+  padding: 0 10px;
+
+  border-radius: 10px;
   background: transparent;
-  color: var(--text-primary);
-  font-size: 0.95rem;
+
   border: none;
   cursor: pointer;
-  transition: all 0.25s ease;
+  user-select: none;
 
-  &:hover {
-    background: var(--quaternary-color, #e6ecff);
-    color: var(--primary-color);
-  }
+  font-weight: 700;
+  font-size: 12px;
 
-  &.active {
-    background: var(--primary-color);
-    color: var(--text-inverse, #fff);
-    font-weight: 600;
-  }
-
-  &:first-child {
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-  }
-
-  &:last-child {
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-  }
+  color: var(--text-primary);
+  transition: all 0.2s ease;
 }
 
-/* 🌙 Темна тема */
-@media (prefers-color-scheme: dark) {
-  .option {
-    color: #eaeaea;
-    &:hover {
-      background: rgba(0, 42, 255, 0.2);
-    }
-  }
+/* hover тільки для неактивних */
+.option:not(.active):hover {
+  background: var(--quaternary-color);
+  color: var(--link-hover);
+}
+
+/* active */
+.active {
+  background: linear-gradient(135deg, var(--secondary-color), var(--tertiary-color));
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.28);
 }

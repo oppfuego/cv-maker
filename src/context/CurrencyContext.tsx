@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-export type Currency = "GBP" | "EUR" | "USD";
+export type Currency = "GBP" | "EUR" | "USD" | "AUD" | "CAD" | "NZD" | "NOK";
 
 interface CurrencyContextType {
     currency: Currency;
@@ -18,13 +18,21 @@ const CURRENCY_SIGNS: Record<Currency, string> = {
     GBP: "£",
     EUR: "€",
     USD: "$",
+    AUD: "A$",
+    CAD: "C$",
+    NZD: "NZ$",
+    NOK: "kr",
 };
 
-// 💹 Поточні курси (можна підключити API для оновлення)
+// 💹 Курси: 1 GBP = X currency (підстав свої точні)
 const RATES: Record<Currency, number> = {
-    GBP: 1,      // базова валюта
-    EUR: 1.17,   // 1 GBP = 1.17 EUR
-    USD: 1.29,   // 1 GBP = 1.29 USD
+    GBP: 1,
+    EUR: 1.17,
+    USD: 1.29,
+    AUD: 1.93,
+    CAD: 1.72,
+    NZD: 2.07,
+    NOK: 13.6,
 };
 
 const CurrencyContext = createContext<CurrencyContextType>({
