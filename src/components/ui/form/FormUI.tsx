@@ -9,6 +9,7 @@ interface FieldConfig {
     name: string;
     type: string;
     placeholder?: string;
+    options?: Array<{ value: string; label: string }>;
 }
 
 interface FormUIProps {

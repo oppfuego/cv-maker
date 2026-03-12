@@ -3,7 +3,15 @@ export type UserRole = "user" | "admin";
 export interface IUser {
     _id: string;
     name: string;
+    firstName: string;
+    lastName: string;
     email: string;
+    phone: string;
+    addressStreet: string;
+    addressCity: string;
+    addressCountry: string;
+    addressPostalCode: string;
+    birthDate: string;
     role: UserRole;
     tokens: number | null;
     createdAt: string;
